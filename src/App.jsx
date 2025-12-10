@@ -3,7 +3,8 @@ import {
   Menu, X, Search, FileText, Activity, AlertTriangle, 
   CheckCircle, Users, Building, Phone, Mail, MapPin, 
   ChevronRight, ArrowRight, Shield, Stethoscope, Eye, 
-  Ear, Wind, Beaker, Truck, ClipboardList, BookOpen, ChevronDown
+  Ear, Wind, Beaker, Truck, ClipboardList, BookOpen, ChevronDown,
+  HardHat, TrendingUp, Handshake
 } from 'lucide-react';
 
 export default function App() {
@@ -44,7 +45,7 @@ export default function App() {
               <button className="hover:text-blue-600 transition-colors">Política de Privacidade</button>
             </div>
             <div className="hidden md:flex items-center gap-4 font-medium">
-              <span className="flex items-center gap-1"><Phone size={12} className="text-blue-600" /> (11) 3000-0000</span>
+              <a href="https://wa.me/5571983156060" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-blue-600 transition-colors"><Phone size={12} className="text-blue-600" /> (71) 98315-6060</a>
               <span className="flex items-center gap-1"><MapPin size={12} className="text-blue-600" /> Av. Paulista, 1000</span>
             </div>
           </div>
@@ -163,55 +164,57 @@ export default function App() {
         </div>
       </section>
 
-      {/* --- CONSULTA DE RESULTADOS --- */}
-      <section id="resultados" className="py-20 bg-slate-100">
+      {/* --- 3 PILARES DA GESTÃO --- */}
+      <section id="resultados" className="py-20 bg-slate-50">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="bg-blue-900 p-6 text-white text-center">
-              <h3 className="text-2xl font-bold mb-2">Consulta de Resultados</h3>
-              <p className="text-blue-200">Acesse seus exames médicos ocupacionais de forma rápida e segura</p>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900">
+              3 Pilares da Gestão Ocupacional
+            </h2>
+            <p className="text-slate-600 mt-4 max-w-2xl mx-auto">
+              Nossa metodologia foca no que realmente importa para a saúde da sua empresa e dos seus colaboradores.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Pilar 1 */}
+            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition text-center border border-slate-100 group">
+              <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
+                <HardHat className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
+              </div>
+              <p className="text-lg font-bold text-slate-800 leading-snug">
+                Prevenção de acidentes e doenças ocupacionais
+              </p>
             </div>
-            <div className="p-8">
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700">CPF do Colaborador</label>
-                  <input type="text" placeholder="000.000.000-00" className="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700">Data do Exame</label>
-                  <input type="date" className="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700">Protocolo (Opcional)</label>
-                  <input type="text" placeholder="Ex: 123456" className="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none" />
-                </div>
+
+            {/* Pilar 2 */}
+            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition text-center border border-slate-100 group">
+              <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
+                <TrendingUp className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
               </div>
-              <button className="w-full mt-6 bg-green-600 text-white font-bold py-4 rounded-lg hover:bg-green-700 transition flex justify-center items-center gap-2">
-                <Search size={20} /> Buscar Resultado
-              </button>
-              <div className="mt-6 flex items-start gap-3 bg-blue-50 p-4 rounded-lg">
-                <Shield className="text-blue-600 flex-shrink-0" size={20} />
-                <p className="text-sm text-blue-800">Seus dados estão protegidos e seguem a LGPD. Apenas colaboradores autorizados e o próprio paciente podem acessar os resultados detalhados.</p>
+              <p className="text-lg font-bold text-slate-800 leading-snug">
+                Aumento da produtividade e eficiência
+              </p>
+            </div>
+
+            {/* Pilar 3 */}
+            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition text-center border border-slate-100 group">
+              <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
+                <Handshake className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
               </div>
+              <p className="text-lg font-bold text-slate-800 leading-snug">
+                Promoção de saúde e bem-estar dos colaboradores
+              </p>
             </div>
           </div>
 
-          {/* Service Types Cards */}
-          <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4 mt-12">
-            {[
-              { icon: FileText, title: "Admissional", desc: "Avaliação inicial" },
-              { icon: Activity, title: "Periódico", desc: "Acompanhamento" },
-              { icon: Users, title: "Mudança de Função", desc: "Nova atividade" },
-              { icon: ArrowRight, title: "Demissional", desc: "Desligamento" },
-              { icon: CheckCircle, title: "Retorno", desc: "Após afastamento" },
-              { icon: Beaker, title: "Complementares", desc: "Laboratoriais" },
-            ].map((service, idx) => (
-              <div key={idx} className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition text-center border border-slate-100">
-                <service.icon className="mx-auto text-blue-600 mb-2" size={24} />
-                <h4 className="font-bold text-slate-800 text-sm">{service.title}</h4>
-                <p className="text-xs text-slate-500 mt-1">{service.desc}</p>
-              </div>
-            ))}
+          <div className="text-center mt-12">
+            <button 
+              onClick={() => scrollToSection('contato')}
+              className="inline-flex items-center gap-2 text-blue-700 font-bold hover:text-blue-900 transition hover:underline underline-offset-4 uppercase tracking-wide text-sm"
+            >
+              Entre em contato conosco <ArrowRight size={16} />
+            </button>
           </div>
         </div>
       </section>
@@ -440,9 +443,8 @@ export default function App() {
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div className="p-6 bg-slate-50 rounded-xl">
               <Phone className="mx-auto text-blue-600 mb-4" size={32} />
-              <h4 className="font-bold text-slate-800 mb-2">Telefone</h4>
-              <p className="text-slate-600">(11) 3000-0000</p>
-              <p className="text-slate-600">(11) 98765-4321</p>
+              <h4 className="font-bold text-slate-800 mb-2">Telefone / WhatsApp</h4>
+              <a href="https://wa.me/5571983156060" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 block">(71) 98315-6060</a>
             </div>
             <div className="p-6 bg-slate-50 rounded-xl">
               <Mail className="mx-auto text-blue-600 mb-4" size={32} />
@@ -522,7 +524,7 @@ export default function App() {
               <div className="flex gap-4">
                 {/* Social Placeholders */}
                 <div className="w-8 h-8 bg-slate-800 rounded flex items-center justify-center hover:bg-blue-600 transition cursor-pointer">FB</div>
-                <div className="w-8 h-8 bg-slate-800 rounded flex items-center justify-center hover:bg-blue-600 transition cursor-pointer">IN</div>
+                <a href="https://www.instagram.com/clinicahco" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-slate-800 rounded flex items-center justify-center hover:bg-blue-600 transition cursor-pointer text-inherit no-underline">IN</a>
                 <div className="w-8 h-8 bg-slate-800 rounded flex items-center justify-center hover:bg-blue-600 transition cursor-pointer">LN</div>
               </div>
             </div>
