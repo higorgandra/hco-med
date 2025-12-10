@@ -3,18 +3,33 @@ import {
   Menu, X, Search, FileText, Activity, AlertTriangle, 
   CheckCircle, Users, Building, Phone, Mail, MapPin, 
   ChevronRight, ArrowRight, Shield, Stethoscope, Eye, 
-  Ear, Wind, Beaker, Truck, ClipboardList, BookOpen
+  Ear, Wind, Beaker, Truck, ClipboardList, BookOpen, ChevronDown
 } from 'lucide-react';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
+  const [openAccordion, setOpenAccordion] = useState(0);
+  const [currentPage, setCurrentPage] = useState('home');
 
   const scrollToSection = (id) => {
     setIsMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    
+    if (id === 'orientacoes') {
+      setCurrentPage('orientacoes');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (currentPage !== 'home') {
+      setCurrentPage('home');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const element = document.getElementById(id);
+      if (element) element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -23,30 +38,59 @@ export default function App() {
       
       {/* --- HEADER --- */}
       <header className="fixed w-full bg-white shadow-md z-50">
+        <div className="bg-white text-blue-900 text-xs py-1 border-b border-blue-50">
+          <div className="container mx-auto px-4 flex justify-between items-center">
+            <div className="flex items-center gap-3 font-medium">
+              <button className="hover:text-blue-600 transition-colors">Política de Privacidade</button>
+            </div>
+            <div className="hidden md:flex items-center gap-4 font-medium">
+              <span className="flex items-center gap-1"><Phone size={12} className="text-blue-600" /> (11) 3000-0000</span>
+              <span className="flex items-center gap-1"><MapPin size={12} className="text-blue-600" /> Av. Paulista, 1000</span>
+            </div>
+          </div>
+        </div>
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          {/* Logo Placeholder - Replicating text logo style */}
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => scrollToSection('home')}>
-            <div className="bg-blue-600 text-white p-2 rounded-lg font-bold text-xl">HCO</div>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="5473 6038 504 506" 
+              className="h-12 w-auto"
+              style={{ shapeRendering: 'geometricPrecision', textRendering: 'geometricPrecision', imageRendering: 'optimizeQuality', fillRule: 'evenodd', clipRule: 'evenodd' }}
+            >
+              <rect fill="#0F2946" x="5473" y="6038" width="504" height="506" rx="59" ry="59"/>
+              <polygon fill="#FEFEFE" points="5718,6123 5663,6123 5663,6228 5548,6228 5548,6283 5663,6283 5718,6283 5718,6228 "/>
+              <polygon fill="#FEFEFE" points="5733,6123 5788,6123 5788,6228 5903,6228 5903,6283 5788,6283 5733,6283 5733,6228 "/>
+              <polygon fill="#FEFEFE" points="5733,6458 5788,6458 5788,6353 5903,6353 5903,6298 5788,6298 5733,6298 5733,6353 "/>
+              <polygon fill="#FEFEFE" points="5718,6458 5663,6458 5663,6353 5548,6353 5548,6298 5663,6298 5718,6298 5718,6353 "/>
+            </svg>
             <div>
-              <h1 className="text-xl font-bold text-blue-900 leading-none">HealthyCare</h1>
-              <p className="text-xs text-blue-500 font-semibold tracking-wider">OCCUPATIONAL</p>
+              <h1 className="text-xl font-bold text-blue-900 leading-none">MEDICINA</h1>
+              <p className="text-xs text-blue-500 font-semibold tracking-wider">E SEGURANÇA DO TRABALHO</p>
             </div>
           </div>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
-            {['Início', 'Resultados', 'eSocial', 'Dicas', 'Normativas', 'Gestão', 'Cadastro'].map((item) => (
+            {[
+              { label: 'Home', id: 'inicio' },
+              { label: 'A Clínica', id: 'inicio' },
+              { label: 'Nossos Serviços', id: 'esocial' },
+              { label: 'Orientações para Exames', id: 'orientacoes' },
+              { label: 'Contato', id: 'contato' }
+            ].map((item) => (
               <button 
-                key={item}
-                onClick={() => scrollToSection(item.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""))}
-                className="hover:text-blue-600 transition-colors uppercase text-xs font-bold tracking-wide"
+                key={item.label}
+                onClick={() => scrollToSection(item.id)}
+                className="hover:text-blue-600 transition-colors uppercase text-xs font-bold tracking-wide flex items-center gap-1"
               >
-                {item}
+                {item.label}
+                {item.icon && <ChevronDown size={14} />}
               </button>
             ))}
-            <button onClick={() => scrollToSection('contato')} className="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition font-bold shadow-lg shadow-blue-200">
-              Contato
-            </button>
+            <a href="https://sistema.soc.com.br/WebSoc/" target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition font-bold shadow-lg shadow-blue-200 flex items-center gap-2">
+              <FileText size={18} />
+              Exames
+            </a>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -59,13 +103,20 @@ export default function App() {
         {isMenuOpen && (
           <div className="lg:hidden bg-white border-t border-slate-100 absolute w-full shadow-lg">
             <div className="flex flex-col p-4 gap-4">
-              {['Início', 'Resultados', 'eSocial', 'Dicas', 'Normativas', 'Gestão', 'Cadastro', 'Contato'].map((item) => (
+              {[
+                { label: 'Home', id: 'inicio' },
+                { label: 'A Clínica', id: 'inicio' },
+                { label: 'Nossos Serviços', id: 'esocial' },
+                { label: 'Orientações para Exames', id: 'orientacoes' },
+                { label: 'Contato', id: 'contato' },
+                { label: 'Exames', id: 'resultados' }
+              ].map((item) => (
                 <button 
-                  key={item}
-                  onClick={() => scrollToSection(item.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""))}
+                  key={item.label}
+                  onClick={() => scrollToSection(item.id)}
                   className="text-left font-semibold text-slate-600 hover:text-blue-600 py-2 border-b border-slate-50"
                 >
-                  {item}
+                  {item.label}
                 </button>
               ))}
             </div>
@@ -73,55 +124,41 @@ export default function App() {
         )}
       </header>
 
-      {/* --- HERO SECTION --- */}
-      <section id="inicio" className="pt-24 pb-12 lg:pt-40 lg:pb-24 bg-gradient-to-br from-blue-50 to-white">
-        <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <span className="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">
+      {currentPage === 'home' && (
+        <>
+          {/* --- HERO SECTION --- */}
+          <section id="inicio" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-cover bg-center" style={{backgroundImage: 'url("https://i.postimg.cc/50Wg4vQJ/freepik-expand-40706.png")'}}>
+        {/* O valor /80 define a opacidade (80%). Mude para /90 (mais escuro) ou /50 (mais claro) */}
+        <div className="absolute inset-0 bg-blue-900/1"></div>
+        {/* <img 
+          src="https://i.postimg.cc/ZKYSYv6H/eng.png" 
+          alt="Engenheiro de Segurança" 
+          className="hidden lg:block absolute bottom-0 right-0 lg:right-10 xl:right-32 max-h-[90%] w-auto z-10"
+        /> */}
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl space-y-6 bg-slate-900/40 backdrop-blur-md border border-white/10 p-6 md:p-10 rounded-3xl shadow-2xl">
+            <span className="bg-blue-500/30 text-blue-100 border border-blue-400/30 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">
               Soluções em Saúde Corporativa
             </span>
-            <h2 className="text-4xl lg:text-6xl font-extrabold text-blue-900 leading-tight">
-              Medicina do Trabalho <span className="text-blue-600">Especializada</span>
+            <h2 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight">
+              Medicina do Trabalho <span className="text-blue-300">Especializada</span>
             </h2>
-            <p className="text-lg text-slate-600 max-w-lg leading-relaxed">
+            <p className="text-lg text-blue-100 max-w-lg leading-relaxed">
               Soluções completas em Saúde Ocupacional para sua empresa. Gestão eficiente, conformidade legal total com o eSocial e cuidado genuíno com seus colaboradores.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button onClick={() => scrollToSection('resultados')} className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition flex items-center gap-2 shadow-lg hover:shadow-xl">
-                <Search size={20} /> Consultar Resultados
+              <button onClick={() => scrollToSection('normativas')} className="bg-[#0A7C15] text-white px-5 py-3 rounded-lg font-bold hover:bg-[#0b9e12] transition flex items-center gap-2 shadow-lg hover:shadow-xl">
+                <ClipboardList size={20} /> PGR e PCMSO
               </button>
-              <button onClick={() => scrollToSection('contato')} className="bg-white text-blue-600 border-2 border-blue-100 px-8 py-3 rounded-lg font-bold hover:bg-blue-50 transition">
-                Fale Conosco
+              <button onClick={() => scrollToSection('esocial')} className="bg-[#0A7C15] text-white border border-[#0EC117] px-5 py-3 rounded-lg font-bold hover:bg-[#0b9e12] transition flex items-center gap-2 shadow-lg hover:shadow-xl">
+                <Shield size={20} /> Gestão eSocial
+              </button>
+              <button onClick={() => scrollToSection('contato')} className="bg-[#0A7C15] text-white border border-[#0EC117] px-5 py-3 rounded-lg font-bold hover:bg-[#0b9e12] transition flex items-center gap-2 shadow-lg hover:shadow-xl">
+                <Users size={20} /> Treinamentos
               </button>
             </div>
             
-            <div className="grid grid-cols-3 gap-4 pt-8 border-t border-slate-200 mt-8">
-              <div>
-                <h4 className="font-bold text-blue-900 text-lg">Online</h4>
-                <p className="text-xs text-slate-500">Resultados ágeis</p>
-              </div>
-              <div>
-                <h4 className="font-bold text-blue-900 text-lg">100% Legal</h4>
-                <p className="text-xs text-slate-500">Conformidade eSocial</p>
-              </div>
-              <div>
-                <h4 className="font-bold text-blue-900 text-lg">Gestão</h4>
-                <p className="text-xs text-slate-500">Controle total</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="relative hidden lg:block">
-            {/* Abstract Graphic Element representing Health/Tech */}
-            <div className="bg-blue-600 rounded-3xl p-1 shadow-2xl rotate-3">
-               <div className="bg-white rounded-2xl overflow-hidden h-96 flex items-center justify-center bg-cover bg-center" style={{backgroundImage: 'url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80")'}}>
-                  <div className="bg-blue-900/80 p-8 text-center rounded-xl backdrop-blur-sm m-8">
-                    <Activity size={48} className="text-white mx-auto mb-4" />
-                    <h3 className="text-white text-2xl font-bold">Tecnologia & Saúde</h3>
-                    <p className="text-blue-100 mt-2">Integrando medicina e dados para segurança da sua empresa.</p>
-                  </div>
-               </div>
-            </div>
+            
           </div>
         </div>
       </section>
@@ -422,6 +459,55 @@ export default function App() {
           </div>
         </div>
       </section>
+        </>
+      )}
+
+      {/* --- PÁGINA DE ORIENTAÇÕES --- */}
+      {currentPage === 'orientacoes' && (
+        <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <div className="mb-12 text-center">
+                <h2 className="text-3xl font-extrabold text-slate-900">Orientações para Exames</h2>
+                <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mt-3">
+                  <button onClick={() => scrollToSection('inicio')} className="hover:text-blue-600 transition-colors">Home</button>
+                  <ChevronRight size={16} className="text-slate-400" />
+                  <span className="font-semibold text-slate-700">Orientações para Exames</span>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                <div className="space-y-2">
+                  {[
+                    { title: "Audiometria", content: "Não usar fones de ouvidos por 24 horas e não ouvir som alto por 48 horas." },
+                    { title: "Cultura de Orofaringe", content: "O colaborador não deve se alimentar e nem escovar os dentes no dia do atendimento." },
+                    { title: "Eletroencefalograma", content: "Não utilizar creme ou gel de cabelo no dia do exame." },
+                    { title: "Glicemia", content: "Jejum de no mínimo 08 horas." },
+                    { title: "Micológico de Unhas", content: "Unhas sem esmaltar e sem cortar por 48 horas." },
+                    { title: "PSA", content: "No mínimo 03 dias de abstinência sexual." },
+                    { title: "Sumário de Urina", content: "Descartar o primeiro jato e colocar no coletor o segundo jato.<br/><br/>Obs: Se a colaboradora estiver no período menstrual não trazer amostra." }
+                  ].map((item, index) => (
+                    <div key={index} className="border-b border-slate-100 last:border-0">
+                      <button 
+                        onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
+                        className={`w-full flex justify-between items-center py-4 text-left font-bold transition-colors ${openAccordion === index ? 'text-blue-600' : 'text-slate-700 hover:text-blue-600'}`}
+                      >
+                        {item.title}
+                        <ChevronDown size={20} className={`transition-transform duration-300 ${openAccordion === index ? 'rotate-180' : ''}`} />
+                      </button>
+                      <div 
+                        className={`overflow-hidden transition-all duration-300 ${openAccordion === index ? 'max-h-40 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}
+                      >
+                        <p className="text-slate-600 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: item.content }}></p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* --- FOOTER --- */}
       <footer className="bg-slate-900 text-slate-400 py-12">
