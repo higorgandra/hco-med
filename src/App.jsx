@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Menu, X, Search, FileText, Activity, AlertTriangle, 
   CheckCircle, Users, Building, Phone, Mail, MapPin, 
@@ -13,15 +13,39 @@ import {
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('exames');
-  const [activeGestaoTab, setActiveGestaoTab] = useState('documentos');
+  const [activeGestaoTab, setActiveGestaoTab] = useState('programas');
   const [openAccordion, setOpenAccordion] = useState(0);
   const [currentPage, setCurrentPage] = useState('home');
+
+  useEffect(() => {
+    const linkFont = document.createElement('link');
+    linkFont.href = "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap";
+    linkFont.rel = "stylesheet";
+    document.head.appendChild(linkFont);
+
+    const linkIcons = document.createElement('link');
+    linkIcons.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css";
+    linkIcons.rel = "stylesheet";
+    document.head.appendChild(linkIcons);
+
+    return () => {
+      document.head.removeChild(linkFont);
+      document.head.removeChild(linkIcons);
+    };
+  }, []);
 
   const scrollToSection = (id) => {
     setIsMenuOpen(false);
     
+    if (id === 'home') {
+      setCurrentPage('home');
+      window.scrollTo(0, 0);
+      return;
+    }
+
     if (id === 'orientacoes') {
       setCurrentPage('orientacoes');
+      setActiveTab('exames');
       window.scrollTo(0, 0);
       return;
     }
@@ -64,6 +88,7 @@ export default function App() {
 
     if (id === 'gestao') {
       setCurrentPage('gestao');
+      setActiveGestaoTab('programas');
       window.scrollTo(0, 0);
       return;
     }
@@ -87,7 +112,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-700">
+    <div className="min-h-screen bg-slate-50 text-slate-700" style={{ fontFamily: '"Inter", sans-serif' }}>
       
       {/* --- HEADER --- */}
       <header className="fixed w-full bg-white shadow-md z-50">
@@ -1568,6 +1593,16 @@ export default function App() {
                 )}
             </div>
 
+            <div className="mt-8 bg-[#0F2C4A] rounded-xl p-8 text-center text-white shadow-lg esocial-cta">
+                <div className="cta-content max-w-2xl mx-auto">
+                    <h3 className="text-2xl font-bold mb-3">Precisa de ajuda com o eSocial?</h3>
+                    <p className="text-slate-200 mb-6">Nossa equipe está pronta para garantir a conformidade da sua empresa</p>
+                    <button onClick={() => scrollToSection('cadastro')} className="bg-white text-[#0F2C4A] font-bold py-3 px-8 rounded-lg hover:bg-slate-100 transition shadow-md inline-block">
+                        Solicitar Orçamento
+                    </button>
+                </div>
+            </div>
+
             </div>
           </div>
         </div>
@@ -1636,9 +1671,9 @@ export default function App() {
                 <li><button onClick={() => scrollToSection('resultados')} className="hover:text-white transition text-left">Resultados de Exames</button></li>
                 <li><button onClick={() => scrollToSection('orientacoes')} className="hover:text-white transition text-left">Dicas e Orientações</button></li>
                 <li><button onClick={() => scrollToSection('socialegestaosst')} className="hover:text-white transition text-left">eSocial e Gestão SST</button></li>
-                <li><button onClick={() => scrollToSection('normativas')} className="hover:text-white transition text-left">Normativas</button></li>
-                <li><button onClick={() => scrollToSection('cadastro')} className="hover:text-white transition text-left">Cadastro</button></li>
                 <li><button onClick={() => scrollToSection('gestao')} className="hover:text-white transition text-left">Gestão de Saúde</button></li>
+                <li><button onClick={() => scrollToSection('normativas')} className="hover:text-white transition text-left">Normativas</button></li>
+              <li><button onClick={() => scrollToSection('cadastro')} className="hover:text-white transition text-left">Cadastro</button></li>
               </ul>
             </div>
             
@@ -1646,7 +1681,7 @@ export default function App() {
             <div>
                <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Links Úteis</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="https://www.gov.br/trabalho-e-previdencia" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Ministério do Trabalho</a></li>
+                <li><a href="https://www.gov.br/pt-br/categorias/trabalho-e-previdencia" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Ministério do Trabalho</a></li>
                 <li><a href="https://www.gov.br/esocial" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">eSocial</a></li>
                 <li><a href="https://www.cfm.org.br" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Conselho Federal de Medicina</a></li>
                 <li><a href="https://www.anamt.org.br" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">ANAMT</a></li>
@@ -1671,7 +1706,7 @@ export default function App() {
                 <p>© 2025 HCO - HealthyCare Occupational. Todos os direitos reservados.</p>
                 <p className="text-slate-500 mt-1">Desenvolvido com foco em gestão e saúde ocupacional.</p>
               </div>
-              <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <div className="flex flex-wrap justify-center items-center gap-2 text-sm">
               <a href="#" className="hover:text-white transition">Termos de Uso</a>
               <span className="text-slate-600">|</span>
               <button onClick={() => scrollToSection('politicadeprivacidade')} className="hover:text-white transition">Política de Privacidade</button>
@@ -1700,7 +1735,7 @@ export default function App() {
       
       {/* --- WHATSAPP FLOATING BUTTON --- */}
       <a
-        href="https://wa.me/5571983156060"
+        href="https://wa.me/5571983156060?text=Ol%C3%A1!%20Gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20os%20servi%C3%A7os%20da%20HCO."
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-4 right-4 z-50 bg-[#25D366] text-white px-4 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-[#20bd5a] transition-colors shadow-none"
