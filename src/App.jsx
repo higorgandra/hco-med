@@ -996,6 +996,17 @@ export default function App() {
                 </div>
               </div>
             </div>
+
+            <div className="mt-8 bg-[#0F2C4A] rounded-xl p-8 text-center text-white shadow-lg esocial-cta">
+                <div className="cta-content max-w-2xl mx-auto">
+                    <h3 className="text-2xl font-bold mb-3">Precisa de ajuda com o eSocial?</h3>
+                    <p className="text-slate-200 mb-6">Nossa equipe está pronta para garantir a conformidade da sua empresa</p>
+                    <button onClick={() => scrollToSection('cadastro')} className="bg-white text-[#0F2C4A] font-bold py-3 px-8 rounded-lg hover:bg-slate-100 transition shadow-md inline-block">
+                        Solicitar Orçamento
+                    </button>
+                </div>
+            </div>
+
             </div>
           </div>
         </div>
@@ -1591,16 +1602,6 @@ export default function App() {
                         </div>
                     </div>
                 )}
-            </div>
-
-            <div className="mt-8 bg-[#0F2C4A] rounded-xl p-8 text-center text-white shadow-lg esocial-cta">
-                <div className="cta-content max-w-2xl mx-auto">
-                    <h3 className="text-2xl font-bold mb-3">Precisa de ajuda com o eSocial?</h3>
-                    <p className="text-slate-200 mb-6">Nossa equipe está pronta para garantir a conformidade da sua empresa</p>
-                    <button onClick={() => scrollToSection('cadastro')} className="bg-white text-[#0F2C4A] font-bold py-3 px-8 rounded-lg hover:bg-slate-100 transition shadow-md inline-block">
-                        Solicitar Orçamento
-                    </button>
-                </div>
             </div>
 
             </div>
