@@ -14,12 +14,12 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('exames');
   const [activeGestaoTab, setActiveGestaoTab] = useState('programas');
-  const [openAccordion, setOpenAccordion] = useState(0);
+  const [openAccordion, setOpenAccordion] = useState(null);
   const [currentPage, setCurrentPage] = useState('home');
 
   useEffect(() => {
     const linkFont = document.createElement('link');
-    linkFont.href = "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap";
+    linkFont.href = "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap";
     linkFont.rel = "stylesheet";
     document.head.appendChild(linkFont);
 
@@ -136,23 +136,23 @@ export default function App() {
               style={{ shapeRendering: 'geometricPrecision', textRendering: 'geometricPrecision', imageRendering: 'optimizeQuality', fillRule: 'evenodd', clipRule: 'evenodd' }}
             >
               <defs>
-                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#0F2C4A" />
-                  <stop offset="100%" stopColor="#527088" />
+                <linearGradient id="crossGradient" gradientUnits="userSpaceOnUse" x1="5548" y1="6290.5" x2="5903" y2="6290.5" gradientTransform="rotate(125, 5725.5, 6290.5)">
+                  <stop offset="0%" stopColor="#D1D5DB" />
+                  <stop offset="50%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#D1D5DB" />
                 </linearGradient>
               </defs>
-              <rect fill="url(#logoGradient)" x="5473" y="6038" width="504" height="506" rx="59" ry="59"/>
-              <polygon fill="#FEFEFE" points="5718,6123 5663,6123 5663,6228 5548,6228 5548,6283 5663,6283 5718,6283 5718,6228 "/>
-              <polygon fill="#FEFEFE" points="5733,6123 5788,6123 5788,6228 5903,6228 5903,6283 5788,6283 5733,6283 5733,6228 "/>
-              <polygon fill="#FEFEFE" points="5733,6458 5788,6458 5788,6353 5903,6353 5903,6298 5788,6298 5733,6298 5733,6353 "/>
-              <polygon fill="#FEFEFE" points="5718,6458 5663,6458 5663,6353 5548,6353 5548,6298 5663,6298 5718,6298 5718,6353 "/>
+              <rect fill="#0F2C4A" x="5473" y="6038" width="504" height="506" rx="59" ry="59"/>
+              <polygon fill="url(#crossGradient)" points="5718,6123 5663,6123 5663,6228 5548,6228 5548,6283 5663,6283 5718,6283 5718,6228 "/>
+              <polygon fill="url(#crossGradient)" points="5733,6123 5788,6123 5788,6228 5903,6228 5903,6283 5788,6283 5733,6283 5733,6228 "/>
+              <polygon fill="url(#crossGradient)" points="5733,6458 5788,6458 5788,6353 5903,6353 5903,6298 5788,6298 5733,6298 5733,6353 "/>
+              <polygon fill="url(#crossGradient)" points="5718,6458 5663,6458 5663,6353 5548,6353 5548,6298 5663,6298 5718,6298 5718,6353 "/>
             </svg>
-            <div className="flex items-center gap-2">
-              <h1 className="text-4xl font-extrabold text-[#0F2C4A] leading-none">HCO</h1>
+            <div className="flex flex-col">
+              <h1 className="text-4xl font-black text-[#0F2C4A] leading-none" style={{ WebkitTextStroke: '1.5px #0F2C4A' }}>HCO</h1>
               <div className="flex flex-col text-[10px] font-bold text-[#A6A6A6] leading-tight tracking-wider">
-                <span>MEDICINA</span>
-                <span>E SEGURANÇA</span>
-                <span>DO TRABALHO</span>
+                <span>HEALTHYCARE</span>
+                <span>OCCUPATIONAL</span>
               </div>
             </div>
           </div>
@@ -303,6 +303,50 @@ export default function App() {
             >
               Entre em contato conosco <ArrowRight size={16} />
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* --- FAQ Section --- */}
+      <section id="faq" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-extrabold text-[#0F2C4A]">Dúvidas Frequentes (FAQ)</h2>
+            <p className="text-slate-600 mt-4 max-w-2xl mx-auto">
+              Quer um PCMSO, PGR e LTCAT prontos e adaptados para sua realidade? Entre em contato agora!
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto space-y-4">
+            {[
+              { q: "O que é o PGR e para que serve?", a: "O PGR (Programa de Gerenciamento de Riscos) identifica e controla riscos no ambiente de trabalho. Ele é obrigatório para empresas com empregados e substitui o antigo PPRA." },
+              { q: "Quem deve fazer o PCMSO?", a: "Toda empresa que tenha pelo menos 1 funcionário registrado no regime CLT deve elaborar o PCMSO, conforme exigido pela NR-7." },
+              { q: "O que é LTCAT e quando ele é exigido?", a: "O LTCAT (Laudo Técnico das Condições Ambientais do Trabalho) é exigido para comprovar a exposição a agentes nocivos e é obrigatório para fins previdenciários, como aposentadoria especial." },
+              { q: "Qual a diferença entre PGR, PCMSO e LTCAT?", a: "PGR trata dos riscos no ambiente; PCMSO cuida da saúde do trabalhador; LTCAT é usado para comprovação junto ao INSS de condições insalubres ou perigosas." },
+              { q: "PGR substitui o PPRA?", a: "Sim. Desde 2022, o PGR substitui o PPRA como exigência legal conforme a nova NR-1." },
+              { q: "Quem pode elaborar o PGR?", a: "O PGR deve ser elaborado por profissional habilitado em segurança do trabalho, preferencialmente engenheiro de segurança ou técnico de segurança com qualificação." },
+              { q: "Quem assina o LTCAT?", a: "O LTCAT deve ser assinado por um engenheiro de segurança do trabalho ou médico do trabalho com registro no CREA ou CRM." },
+              { q: "Quanto tempo vale o PCMSO, PGR e LTCAT?", a: "Todos devem ser atualizados anualmente ou sempre que houver mudanças nos riscos, processos ou quadro de funcionários." },
+              { q: "Precisa de visita técnica para emitir esses documentos?", a: "Depende. Em muitos casos, a avaliação pode ser feita online com base em informações e documentos fornecidos pela empresa. Em outros, pode ser necessária visita técnica." },
+              { q: "PGR, PCMSO e LTCAT são obrigatórios para MEI?", a: "MEI com funcionário registrado, grau de risco 3 ou 4 precisa dos documentos. Se atua sozinho, em regra, não é obrigado, mas pode ser exigido por clientes, obras ou licitações." }
+            ].map((item, index) => (
+              <div key={index} className="border border-slate-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md">
+                <button
+                  onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
+                  className="w-full flex justify-between items-center p-5 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100"
+                >
+                  <span>{item.q}</span>
+                  <ChevronDown
+                    className={`transform transition-transform duration-300 flex-shrink-0 ${openAccordion === index ? 'rotate-180' : ''}`}
+                    size={20}
+                  />
+                </button>
+                <div
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${openAccordion === index ? 'max-h-96' : 'max-h-0'}`}
+                >
+                  <div className="p-5 text-slate-600 leading-relaxed bg-white border-t border-slate-100" dangerouslySetInnerHTML={{ __html: item.a }}></div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -980,7 +1024,10 @@ export default function App() {
                     "Sistema integrado que automatiza o processo.",
                     "Monitoramento em tempo real de pendências.",
                     "Equipe técnica especializada em medicina e engenharia.",
-                    "Auditoria de dados antes do envio ao Governo."
+                    "Auditoria de dados antes do envio ao Governo.",
+                    "Redução de custos com gestão preventiva de afastamentos.",
+                    "Atendimento personalizado com gestor de conta dedicado.",
+                    "Integração direta com os principais softwares de folha."
                   ].map((text, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <CheckCircle className="text-green-500 flex-shrink-0 mt-1" size={20} />
@@ -988,12 +1035,6 @@ export default function App() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-8 pt-8 border-t border-slate-200">
-                  <h4 className="font-bold text-slate-800 mb-4">Precisa regularizar sua empresa?</h4>
-                  <button onClick={() => scrollToSection('cadastro')} className="w-full bg-[#0F2C4A] text-white font-bold py-3 rounded-lg hover:bg-[#0A1F35] transition flex items-center justify-center gap-2">
-                    Solicitar Diagnóstico Gratuito
-                  </button>
-                </div>
               </div>
             </div>
 
