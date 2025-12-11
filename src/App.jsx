@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, X, Search, FileText, Activity, AlertTriangle, 
   CheckCircle, Users, Building, Phone, Mail, MapPin, 
-  ChevronRight, ArrowRight, Shield, Stethoscope, Eye, 
+  ChevronRight, ChevronLeft, ArrowRight, Shield, Stethoscope, Eye, 
   Ear, Wind, Beaker, Truck, ClipboardList, BookOpen, ChevronDown,
   HardHat, TrendingUp, Handshake, Facebook, Instagram, Linkedin, Youtube, Copyright,
   Gavel, FileCheck, Flame, Zap, Package, Settings, Thermometer, User, Minimize2, ArrowUpCircle, Clock, Send,
@@ -16,6 +16,140 @@ export default function App() {
   const [activeGestaoTab, setActiveGestaoTab] = useState('programas');
   const [openAccordion, setOpenAccordion] = useState(null);
   const [currentPage, setCurrentPage] = useState('home');
+  const [formResult, setFormResult] = useState({ message: "", type: "" });
+  const [submitStatus, setSubmitStatus] = useState('idle');
+  const [countdown, setCountdown] = useState(0);
+  const timerRef = useRef(null);
+  const submitButtonRef = useRef(null);
+
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [messageText, setMessageText] = useState("");
+
+  const [currentPilarIndex, setCurrentPilarIndex] = useState(0);
+
+  const pilares = [
+    { icon: HardHat, text: "Prevenção de acidentes e doenças ocupacionais" },
+    { icon: TrendingUp, text: "Aumento da produtividade e eficiência" },
+    { icon: Handshake, text: "Promoção de saúde e bem-estar dos colaboradores" }
+  ];
+
+  const nextPilar = () => setCurrentPilarIndex((prev) => (prev + 1) % pilares.length);
+  const prevPilar = () => setCurrentPilarIndex((prev) => (prev - 1 + pilares.length) % pilares.length);
+
+  const handleInputChange = (e) => {
+    const { name, validity } = e.target;
+    let message = '';
+    if (!validity.valid) {
+      if (validity.valueMissing) message = 'Campo obrigatório';
+      else if (validity.typeMismatch) message = 'Formato inválido';
+      else if (validity.tooShort) message = `Mínimo de ${e.target.minLength} caracteres`;
+      else message = 'Valor inválido';
+    }
+    setFieldErrors(prev => ({ ...prev, [name]: message }));
+  };
+
+  const handlePhoneInput = (e) => {
+    let v = e.target.value;
+    v = v.replace(/\D/g, ""); // Remove tudo o que não é dígito
+    if (v.length > 11) v = v.slice(0, 11); // Limita a 11 dígitos
+    v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); // Coloca parênteses em volta dos dois primeiros dígitos
+    v = v.replace(/(\d)(\d{4})$/, "$1-$2"); // Coloca hífen entre o quarto e o quinto dígitos
+    e.target.value = v;
+    handleInputChange(e); // Valida o campo após a formatação
+  };
+
+  const cancelSubmission = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setSubmitStatus('idle');
+    setCountdown(0);
+  };
+
+  useEffect(() => {
+    if (submitStatus !== 'counting') {
+      return;
+    }
+
+    const handleCancelClick = (event) => {
+      if (submitButtonRef.current && submitButtonRef.current.contains(event.target)) {
+        return;
+      }
+      cancelSubmission();
+    };
+
+    const handleWindowBlur = () => cancelSubmission();
+
+    document.addEventListener('click', handleCancelClick, true);
+    window.addEventListener('blur', handleWindowBlur);
+
+    return () => {
+      document.removeEventListener('click', handleCancelClick, true);
+      window.removeEventListener('blur', handleWindowBlur);
+    };
+  }, [submitStatus]);
+
+  const onSubmitContactForm = async (event) => {
+    event.preventDefault();
+    if (submitStatus !== 'idle') return;
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const mensagem = formData.get("mensagem");
+    if (mensagem && mensagem.length < 20) {
+      setFieldErrors(prev => ({ ...prev, mensagem: "Mínimo de 20 caracteres" }));
+      return;
+    }
+
+    setSubmitStatus('counting');
+    setCountdown(3);
+
+    let count = 3;
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    timerRef.current = setInterval(async () => {
+      count -= 1;
+      setCountdown(count);
+
+      if (count <= 0) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        setSubmitStatus('sending');
+        
+        formData.append("subject", `${formData.get("empresa")} - ${formData.get("assunto")}`);
+        formData.append("access_key", "5cccab4a-71e3-4c20-8043-7f92c90c1723");
+
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setSubmitStatus('success');
+          setFormResult({ message: "Mensagem enviada com sucesso! Agradecemos o seu contato.", type: "success" });
+          form.reset();
+          setMessageText("");
+          setTimeout(() => {
+            setFormResult({ message: "", type: "" });
+            setSubmitStatus('idle');
+          }, 3000);
+        } else {
+          console.log("Error", data);
+          setSubmitStatus('idle');
+          setFormResult({ message: `Ocorreu um erro: ${data.message}. Tente novamente.`, type: "error" });
+          setTimeout(() => {
+            setFormResult({ message: "", type: "" });
+          }, 6000);
+        }
+      }
+    }, 1000);
+  };
 
   useEffect(() => {
     const linkFont = document.createElement('link');
@@ -39,6 +173,12 @@ export default function App() {
     
     if (id === 'home') {
       setCurrentPage('home');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (id === 'clinica') {
+      setCurrentPage('clinica');
       window.scrollTo(0, 0);
       return;
     }
@@ -93,6 +233,12 @@ export default function App() {
       return;
     }
 
+    if (id === 'diretrizes') {
+      setCurrentPage('diretrizes');
+      window.scrollTo(0, 0);
+      return;
+    }
+
     if (id === 'sitemap') {
       setCurrentPage('sitemap');
       window.scrollTo(0, 0);
@@ -123,7 +269,7 @@ export default function App() {
             </div>
             <div className="hidden md:flex items-center gap-4 font-medium">
               <a href="https://wa.me/5571983156060" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-[#0F2C4A] transition-colors"><Phone size={12} className="text-[#0F2C4A]" /> (71) 98315-6060</a>
-              <span className="flex items-center gap-1"><MapPin size={12} className="text-[#0F2C4A]" /> Av. Paulista, 1000</span>
+              <span className="flex items-center gap-1"><MapPin size={12} className="text-[#0F2C4A]" /> Av. Porto dos Mastros, 162</span>
             </div>
           </div>
         </div>
@@ -148,11 +294,12 @@ export default function App() {
               <polygon fill="url(#crossGradient)" points="5733,6458 5788,6458 5788,6353 5903,6353 5903,6298 5788,6298 5733,6298 5733,6353 "/>
               <polygon fill="url(#crossGradient)" points="5718,6458 5663,6458 5663,6353 5548,6353 5548,6298 5663,6298 5718,6298 5718,6353 "/>
             </svg>
-            <div className="flex flex-col">
-              <h1 className="text-4xl font-black text-[#0F2C4A] leading-none" style={{ WebkitTextStroke: '1.5px #0F2C4A' }}>HCO</h1>
-              <div className="flex flex-col text-[10px] font-bold text-[#A6A6A6] leading-tight tracking-wider">
-                <span>HEALTHYCARE</span>
-                <span>OCCUPATIONAL</span>
+            <div className="flex items-center gap-2">
+              <h1 className="text-6xl font-black text-[#0F2C4A] leading-none" style={{ WebkitTextStroke: '1.5px #0F2C4A' }}>HCO</h1>
+              <div className="flex flex-col text-[13px] font-bold text-[#A6A6A6] leading-tight tracking-wider">
+                <span>MEDICINA</span>
+                <span>E SEGURANÇA</span>
+                <span>DO TRABALHO</span>
               </div>
             </div>
           </div>
@@ -234,7 +381,7 @@ export default function App() {
               Soluções completas em Saúde Ocupacional para sua empresa. Gestão eficiente, conformidade legal total com o eSocial e cuidado genuíno com seus colaboradores.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button onClick={() => scrollToSection('normativas')} className="bg-[#0A7C15] text-white px-5 py-3 rounded-lg font-bold hover:bg-[#0b9e12] transition flex items-center gap-2 shadow-lg hover:shadow-xl">
+              <button onClick={() => scrollToSection('normativas')} className="bg-[#0A7C15] text-white border border-[#0EC117] px-5 py-3 rounded-lg font-bold hover:bg-[#0b9e12] transition flex items-center gap-2 shadow-lg hover:shadow-xl">
                 <ClipboardList size={20} /> PGR e PCMSO
               </button>
               <button onClick={() => scrollToSection('socialegestaosst')} className="bg-[#0A7C15] text-white border border-[#0EC117] px-5 py-3 rounded-lg font-bold hover:bg-[#0b9e12] transition flex items-center gap-2 shadow-lg hover:shadow-xl">
@@ -262,7 +409,8 @@ export default function App() {
             </p>
           </div>
 
-          <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+          {/* Desktop View */}
+          <div className="hidden md:block bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
             <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-100">
               {/* Pilar 1 */}
               <div className="p-8 md:p-12 text-center group hover:bg-slate-50 transition duration-300">
@@ -296,6 +444,33 @@ export default function App() {
             </div>
           </div>
 
+          {/* Mobile View (Carousel) */}
+          <div className="md:hidden bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden p-8">
+            <div className="flex items-center justify-between">
+              <button onClick={prevPilar} className="p-2 text-[#0F2C4A] hover:bg-slate-50 rounded-full transition-colors" aria-label="Anterior">
+                <ChevronLeft size={32} />
+              </button>
+              
+              <div className="flex-1 px-2 text-center">
+                <div className="w-20 h-20 mx-auto bg-[#0F2C4A]/5 rounded-full flex items-center justify-center mb-6">
+                  {React.createElement(pilares[currentPilarIndex].icon, { className: "text-[#0F2C4A]", size: 36, strokeWidth: 1.5 })}
+                </div>
+                <p className="text-lg font-bold text-slate-800 leading-snug min-h-[3.5rem] flex items-center justify-center">
+                  {pilares[currentPilarIndex].text}
+                </p>
+              </div>
+
+              <button onClick={nextPilar} className="p-2 text-[#0F2C4A] hover:bg-slate-50 rounded-full transition-colors" aria-label="Próximo">
+                <ChevronRight size={32} />
+              </button>
+            </div>
+            <div className="flex justify-center gap-2 mt-4">
+              {pilares.map((_, idx) => (
+                <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === currentPilarIndex ? 'bg-[#0F2C4A] w-4' : 'bg-slate-300'}`} />
+              ))}
+            </div>
+          </div>
+
           <div className="text-center mt-12">
             <button 
               onClick={() => scrollToSection('contato')}
@@ -308,7 +483,7 @@ export default function App() {
       </section>
 
       {/* --- FAQ Section --- */}
-      <section id="faq" className="py-20 bg-white">
+      <section id="faq" className="pt-20 pb-20 bg-white min-h-[1300px]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-[#0F2C4A]">Dúvidas Frequentes (FAQ)</h2>
@@ -329,19 +504,19 @@ export default function App() {
               { q: "Precisa de visita técnica para emitir esses documentos?", a: "Depende. Em muitos casos, a avaliação pode ser feita online com base em informações e documentos fornecidos pela empresa. Em outros, pode ser necessária visita técnica." },
               { q: "PGR, PCMSO e LTCAT são obrigatórios para MEI?", a: "MEI com funcionário registrado, grau de risco 3 ou 4 precisa dos documentos. Se atua sozinho, em regra, não é obrigado, mas pode ser exigido por clientes, obras ou licitações." }
             ].map((item, index) => (
-              <div key={index} className="border border-slate-200 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-md">
+              <div key={index} className="border border-slate-200 rounded-xl overflow-hidden hover:shadow-md">
                 <button
                   onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
                   className="w-full flex justify-between items-center p-5 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100"
                 >
                   <span>{item.q}</span>
                   <ChevronDown
-                    className={`transform transition-transform duration-300 flex-shrink-0 ${openAccordion === index ? 'rotate-180' : ''}`}
+                    className={`flex-shrink-0 ${openAccordion === index ? 'rotate-180' : ''}`}
                     size={20}
                   />
                 </button>
                 <div
-                  className={`transition-all duration-500 ease-in-out overflow-hidden ${openAccordion === index ? 'max-h-96' : 'max-h-0'}`}
+                  className={`overflow-hidden ${openAccordion === index ? 'block' : 'hidden'}`}
                 >
                   <div className="p-5 text-slate-600 leading-relaxed bg-white border-t border-slate-100" dangerouslySetInnerHTML={{ __html: item.a }}></div>
                 </div>
@@ -354,13 +529,59 @@ export default function App() {
         </>
       )}
 
+      {/* --- PÁGINA A CLÍNICA --- */}
+      {currentPage === 'clinica' && (
+        <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+              <div className="relative h-64 bg-[#0F2C4A] flex items-center justify-center overflow-hidden">
+                <div className="absolute w-96 h-96 bg-white/5 rounded-full -top-20 -left-20 blur-3xl"></div>
+                <div className="absolute w-96 h-96 bg-blue-400/10 rounded-full -bottom-20 -right-20 blur-3xl"></div>
+                <div className="relative z-10 text-center px-4">
+                  <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">A Clínica</h2>
+                  <p className="text-blue-100 text-lg font-medium max-w-2xl mx-auto">Excelência e Inovação em Saúde Ocupacional</p>
+                </div>
+              </div>
+              
+              <div className="p-8 md:p-16">
+                <div className="max-w-3xl mx-auto space-y-8 text-lg text-slate-600 leading-relaxed text-justify">
+                  <p>
+                    <strong className="text-[#0F2C4A]">A HCO – Healthcare Occupational</strong> tem a honra de apresentar esta proposta comercial, desenvolvida para atender empresas que buscam excelência em Medicina e Segurança do Trabalho. Atuamos com foco estratégico na saúde do trabalhador, na redução de riscos operacionais e no rigoroso cumprimento das Normas Regulamentadoras, garantindo segurança jurídica e eficiência operacional aos nossos clientes.
+                  </p>
+                  
+                  <p>
+                    Nossa metodologia integra tecnologia, agilidade e padrões clínicos de alta qualidade, assegurando processos mais organizados, diagnósticos precisos e acompanhamento contínuo. Trabalhamos para que sua empresa esteja sempre em conformidade, evitando multas, reduzindo passivos trabalhistas e fortalecendo a cultura de prevenção.
+                  </p>
+
+                  <p>
+                    Oferecemos soluções completas: gestão de exames ocupacionais, implementação de programas legais, avaliação de riscos, treinamentos obrigatórios, laudos técnicos e consultoria especializada para apoiar decisões estratégicas. Cada serviço é pensado para proporcionar tranquilidade, proteção e resultados concretos.
+                  </p>
+
+                  <div className="bg-slate-50 p-8 rounded-2xl border-l-4 border-[#0F2C4A] mt-8">
+                    <p className="font-medium text-slate-700 italic">
+                      "Com a HCO, sua empresa recebe um parceiro comprometido com segurança, transparência e responsabilidade. Nosso propósito é cuidar das pessoas e elevar o nível de saúde ocupacional do seu negócio, contribuindo para um ambiente de trabalho mais seguro, saudável e produtivo. Estamos prontos para atender com excelência."
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="mt-16 flex justify-center">
+                  <button onClick={() => scrollToSection('contato')} className="bg-[#0F2C4A] text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-[#0A1F35] transition shadow-lg hover:shadow-xl flex items-center gap-3">
+                    Fale Conosco <ArrowRight size={20} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* --- PÁGINA DE ORIENTAÇÕES --- */}
       {currentPage === 'orientacoes' && (
         <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
           <div className="max-w-6xl mx-auto px-4">
             <div className="w-full mx-auto bg-white rounded-2xl shadow-lg p-8 md:p-12">
               <div className="mb-12 text-center">
-                <h2 className="text-3xl font-extrabold text-[#0F2C4A]">Dicas e Orientações</h2>
+                <h2 className="text-4xl md:text-5xl font-black text-[#0F2C4A]">Dicas e Orientações</h2>
                 <p className="text-slate-600 mt-2">Orientações especializadas para promover saúde e segurança no ambiente de trabalho</p>
                 <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mt-3">
                   <button onClick={() => scrollToSection('inicio')} className="hover:text-[#0F2C4A] transition-colors">Home</button>
@@ -556,13 +777,14 @@ export default function App() {
             <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
             
             <div className="mb-16 text-center">
-              <h2 className="text-3xl font-extrabold text-[#0F2C4A] mb-4">Entre em Contato</h2>
-              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mb-6">
+              <h2 className="text-4xl md:text-5xl font-black text-[#0F2C4A] mb-4">Entre em Contato</h2>
+              <p className="text-slate-600 mt-2">Nossa equipe está pronta para atender sua empresa</p>
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mt-3">
                 <button onClick={() => scrollToSection('home')} className="hover:text-[#0F2C4A] transition-colors">Home</button>
                 <ChevronRight size={16} className="text-slate-400" />
                 <span className="font-semibold text-slate-700">Contato</span>
               </div>
-              <p className="text-slate-600 mt-2">Nossa equipe está pronta para atender sua empresa</p>
+              
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12">
@@ -584,8 +806,7 @@ export default function App() {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-800 text-lg mb-1">E-mail</h4>
-                    <p className="text-slate-600">contato@hco.com.br</p>
-                    <p className="text-slate-600">atendimento@hco.com.br</p>
+                    <p className="text-slate-600">comercial@clinicahco.com.br</p>
                   </div>
                 </div>
 
@@ -595,8 +816,8 @@ export default function App() {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-800 text-lg mb-1">Endereço</h4>
-                    <p className="text-slate-600">Av. Paulista, 1000</p>
-                    <p className="text-slate-600">São Paulo - SP, 01310-100</p>
+                    <p className="text-slate-600">Av. Porto dos Mastros, 162</p>
+                    <p className="text-slate-600">Salvador - BA, 40421-520</p>
                   </div>
                 </div>
 
@@ -614,32 +835,36 @@ export default function App() {
 
               {/* Contact Form */}
               <div className="bg-white p-8 rounded-2xl shadow-lg">
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={onSubmitContactForm}>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="nome" className="text-sm font-bold text-slate-700">Nome Completo *</label>
-                      <input type="text" id="nome" name="nome" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required />
+                      <label htmlFor="name" className="text-sm font-bold text-slate-700">Nome Completo *</label>
+                      <input type="text" id="name" name="name" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required />
+                      {fieldErrors.name && <span className="text-red-500 text-xs font-bold">{fieldErrors.name}</span>}
                     </div>
                     <div className="space-y-2">
                       <label htmlFor="empresa" className="text-sm font-bold text-slate-700">Empresa *</label>
-                      <input type="text" id="empresa" name="empresa" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required />
+                      <input type="text" id="empresa" name="empresa" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required />
+                      {fieldErrors.empresa && <span className="text-red-500 text-xs font-bold">{fieldErrors.empresa}</span>}
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label htmlFor="email" className="text-sm font-bold text-slate-700">E-mail *</label>
-                      <input type="email" id="email" name="email" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required />
+                      <input type="email" id="email" name="email" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required />
+                      {fieldErrors.email && <span className="text-red-500 text-xs font-bold">{fieldErrors.email}</span>}
                     </div>
                     <div className="space-y-2">
                       <label htmlFor="telefone" className="text-sm font-bold text-slate-700">Telefone *</label>
-                      <input type="tel" id="telefone" name="telefone" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required />
+                      <input type="tel" id="telefone" name="telefone" onInput={handlePhoneInput} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required maxLength="15" />
+                      {fieldErrors.telefone && <span className="text-red-500 text-xs font-bold">{fieldErrors.telefone}</span>}
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label htmlFor="assunto" className="text-sm font-bold text-slate-700">Assunto *</label>
-                    <select id="assunto" name="assunto" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition text-slate-600 bg-white" required>
+                    <select id="assunto" name="assunto" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition text-slate-600 bg-white" required>
                       <option value="">Selecione um assunto</option>
                       <option value="exames">Exames Ocupacionais</option>
                       <option value="programas">Programas de SST</option>
@@ -647,16 +872,51 @@ export default function App() {
                       <option value="consultoria">Consultoria</option>
                       <option value="outros">Outros</option>
                     </select>
+                    {fieldErrors.assunto && <span className="text-red-500 text-xs font-bold">{fieldErrors.assunto}</span>}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label htmlFor="pais" className="text-sm font-bold text-slate-700">País *</label>
+                    <select id="pais" name="pais" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition text-slate-600 bg-white" required>
+                      <option value="Brasil" selected>Brasil</option>
+                    </select>
+                    {fieldErrors.pais && <span className="text-red-500 text-xs font-bold">{fieldErrors.pais}</span>}
                   </div>
 
                   <div className="space-y-2">
                     <label htmlFor="mensagem" className="text-sm font-bold text-slate-700">Mensagem *</label>
-                    <textarea id="mensagem" name="mensagem" rows="5" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required></textarea>
+                    <textarea id="mensagem" name="mensagem" onInput={(e) => { handleInputChange(e); setMessageText(e.target.value); }} rows="5" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-white" required minLength="20"></textarea>
+                    <div className="flex justify-between items-start">
+                      {fieldErrors.mensagem ? <span className="text-red-500 text-xs font-bold">{fieldErrors.mensagem}</span> : <span></span>}
+                      <span className={`text-xs font-medium ${messageText.length < 20 ? 'text-slate-400' : 'text-green-600'}`}>
+                        {messageText.length < 20 
+                          ? `Faltam ${20 - messageText.length} caracteres` 
+                          : `${messageText.length} caracteres`}
+                      </span>
+                    </div>
                   </div>
 
-                  <button type="submit" className="w-full bg-[#0F2C4A] text-white font-bold py-4 rounded-lg hover:bg-[#0A1F35] transition shadow-lg flex items-center justify-center gap-2">
-                    <Send size={20} /> Enviar Mensagem
+                  <button 
+                    type="submit" 
+                    ref={submitButtonRef}
+                    disabled={submitStatus !== 'idle'}
+                    className={`w-full font-bold py-4 rounded-lg transition shadow-lg flex items-center justify-center gap-2 ${submitStatus === 'idle' ? 'bg-[#0F2C4A] text-white hover:bg-[#0A1F35]' : submitStatus === 'success' ? 'bg-green-600 text-white' : 'bg-slate-400 text-white cursor-not-allowed'}`}
+                  >
+                    {submitStatus === 'idle' && "Enviar Mensagem"}
+                    {submitStatus === 'counting' && `Enviando em ${countdown}...`}
+                    {submitStatus === 'sending' && "Aguarde..."}
+                    {submitStatus === 'success' && "Mensagem Enviada!"}
                   </button>
+
+                  {formResult.message && (
+                    <p className={`text-center mt-4 font-medium text-sm p-3 rounded-lg ${
+                      formResult.type === 'success' ? 'bg-green-100 text-green-800' : 
+                      formResult.type === 'error' ? 'bg-red-100 text-red-800' : 
+                      'bg-blue-100 text-blue-800'
+                    }`}>
+                      {formResult.message}
+                    </p>
+                  )}
                 </form>
               </div>
             </div>
@@ -721,18 +981,21 @@ export default function App() {
                   <div className="space-y-4">
                     <div>
                       <label htmlFor="razaoSocial" className="block text-sm font-bold text-slate-700 mb-1">Razão Social *</label>
-                      <input type="text" id="razaoSocial" name="razaoSocial" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      <input type="text" id="razaoSocial" name="razaoSocial" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      {fieldErrors.razaoSocial && <span className="text-red-500 text-xs font-bold">{fieldErrors.razaoSocial}</span>}
                     </div>
                     
                     <div>
                       <label htmlFor="nomeFantasia" className="block text-sm font-bold text-slate-700 mb-1">Nome Fantasia *</label>
-                      <input type="text" id="nomeFantasia" name="nomeFantasia" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      <input type="text" id="nomeFantasia" name="nomeFantasia" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      {fieldErrors.nomeFantasia && <span className="text-red-500 text-xs font-bold">{fieldErrors.nomeFantasia}</span>}
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="cnpj" className="block text-sm font-bold text-slate-700 mb-1">CNPJ *</label>
-                        <input type="text" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="18" />
+                        <input type="text" id="cnpj" name="cnpj" onInput={handleInputChange} placeholder="00.000.000/0000-00" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="18" />
+                        {fieldErrors.cnpj && <span className="text-red-500 text-xs font-bold">{fieldErrors.cnpj}</span>}
                       </div>
                       <div>
                         <label htmlFor="inscricaoEstadual" className="block text-sm font-bold text-slate-700 mb-1">Inscrição Estadual</label>
@@ -743,7 +1006,7 @@ export default function App() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="setor" className="block text-sm font-bold text-slate-700 mb-1">Setor de Atividade *</label>
-                        <select id="setor" name="setor" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white text-slate-600" required>
+                        <select id="setor" name="setor" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white text-slate-600" required>
                           <option value="">Selecione...</option>
                           <option value="industria">Indústria</option>
                           <option value="comercio">Comércio</option>
@@ -755,10 +1018,11 @@ export default function App() {
                           <option value="transportes">Transportes</option>
                           <option value="outros">Outros</option>
                         </select>
+                        {fieldErrors.setor && <span className="text-red-500 text-xs font-bold">{fieldErrors.setor}</span>}
                       </div>
                       <div>
                         <label htmlFor="numFuncionarios" className="block text-sm font-bold text-slate-700 mb-1">Nº Funcionários *</label>
-                        <select id="numFuncionarios" name="numFuncionarios" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white text-slate-600" required>
+                        <select id="numFuncionarios" name="numFuncionarios" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white text-slate-600" required>
                           <option value="">Selecione...</option>
                           <option value="1-10">1 a 10</option>
                           <option value="11-50">11 a 50</option>
@@ -766,6 +1030,7 @@ export default function App() {
                           <option value="101-500">101 a 500</option>
                           <option value="500+">Mais de 500</option>
                         </select>
+                        {fieldErrors.numFuncionarios && <span className="text-red-500 text-xs font-bold">{fieldErrors.numFuncionarios}</span>}
                       </div>
                     </div>
                   </div>
@@ -778,22 +1043,26 @@ export default function App() {
                     <div className="flex gap-4">
                       <div className="w-1/3">
                         <label htmlFor="cep" className="block text-sm font-bold text-slate-700 mb-1">CEP *</label>
-                        <input type="text" id="cep" name="cep" placeholder="00000-000" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="9" />
+                        <input type="text" id="cep" name="cep" onInput={handleInputChange} placeholder="00000-000" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="9" />
+                        {fieldErrors.cep && <span className="text-red-500 text-xs font-bold">{fieldErrors.cep}</span>}
                       </div>
                       <div className="w-2/3">
                         <label htmlFor="cidade" className="block text-sm font-bold text-slate-700 mb-1">Cidade *</label>
-                        <input type="text" id="cidade" name="cidade" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        <input type="text" id="cidade" name="cidade" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        {fieldErrors.cidade && <span className="text-red-500 text-xs font-bold">{fieldErrors.cidade}</span>}
                       </div>
                     </div>
                     
                     <div className="flex gap-4">
                       <div className="w-3/4">
                         <label htmlFor="endereco" className="block text-sm font-bold text-slate-700 mb-1">Endereço Completo *</label>
-                        <input type="text" id="endereco" name="endereco" placeholder="Rua, número, complemento" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        <input type="text" id="endereco" name="endereco" onInput={handleInputChange} placeholder="Rua, número, complemento" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        {fieldErrors.endereco && <span className="text-red-500 text-xs font-bold">{fieldErrors.endereco}</span>}
                       </div>
                       <div className="w-1/4">
                         <label htmlFor="estado" className="block text-sm font-bold text-slate-700 mb-1">UF *</label>
-                        <input type="text" id="estado" name="estado" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="2" />
+                        <input type="text" id="estado" name="estado" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="2" />
+                        {fieldErrors.estado && <span className="text-red-500 text-xs font-bold">{fieldErrors.estado}</span>}
                       </div>
                     </div>
                   </div>
@@ -805,28 +1074,33 @@ export default function App() {
                   <div className="space-y-4">
                     <div>
                       <label htmlFor="nomeResponsavel" className="block text-sm font-bold text-slate-700 mb-1">Nome Completo *</label>
-                      <input type="text" id="nomeResponsavel" name="nomeResponsavel" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      <input type="text" id="nomeResponsavel" name="nomeResponsavel" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      {fieldErrors.nomeResponsavel && <span className="text-red-500 text-xs font-bold">{fieldErrors.nomeResponsavel}</span>}
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="cargoResponsavel" className="block text-sm font-bold text-slate-700 mb-1">Cargo *</label>
-                        <input type="text" id="cargoResponsavel" name="cargoResponsavel" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        <input type="text" id="cargoResponsavel" name="cargoResponsavel" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        {fieldErrors.cargoResponsavel && <span className="text-red-500 text-xs font-bold">{fieldErrors.cargoResponsavel}</span>}
                       </div>
                       <div>
                         <label htmlFor="cpfResponsavel" className="block text-sm font-bold text-slate-700 mb-1">CPF *</label>
-                        <input type="text" id="cpfResponsavel" name="cpfResponsavel" placeholder="000.000.000-00" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="14" />
+                        <input type="text" id="cpfResponsavel" name="cpfResponsavel" onInput={handleInputChange} placeholder="000.000.000-00" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="14" />
+                        {fieldErrors.cpfResponsavel && <span className="text-red-500 text-xs font-bold">{fieldErrors.cpfResponsavel}</span>}
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="emailResponsavel" className="block text-sm font-bold text-slate-700 mb-1">E-mail *</label>
-                        <input type="email" id="emailResponsavel" name="emailResponsavel" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        <input type="email" id="emailResponsavel" name="emailResponsavel" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        {fieldErrors.emailResponsavel && <span className="text-red-500 text-xs font-bold">{fieldErrors.emailResponsavel}</span>}
                       </div>
                       <div>
                         <label htmlFor="telefoneResponsavel" className="block text-sm font-bold text-slate-700 mb-1">Telefone *</label>
-                        <input type="tel" id="telefoneResponsavel" name="telefoneResponsavel" placeholder="(00) 00000-0000" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                        <input type="tel" id="telefoneResponsavel" name="telefoneResponsavel" onInput={handlePhoneInput} placeholder="(00) 00000-0000" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="15" />
+                        {fieldErrors.telefoneResponsavel && <span className="text-red-500 text-xs font-bold">{fieldErrors.telefoneResponsavel}</span>}
                       </div>
                     </div>
                   </div>
@@ -838,12 +1112,14 @@ export default function App() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="senhaEmpresa" className="block text-sm font-bold text-slate-700 mb-1">Senha *</label>
-                      <input type="password" id="senhaEmpresa" name="senhaEmpresa" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required minLength="6" />
+                      <input type="password" id="senhaEmpresa" name="senhaEmpresa" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required minLength="6" />
                       <small className="text-xs text-slate-500">Mínimo 6 caracteres</small>
+                      {fieldErrors.senhaEmpresa && <span className="text-red-500 text-xs font-bold block">{fieldErrors.senhaEmpresa}</span>}
                     </div>
                     <div>
                       <label htmlFor="confirmarSenha" className="block text-sm font-bold text-slate-700 mb-1">Confirmar Senha *</label>
-                      <input type="password" id="confirmarSenha" name="confirmarSenha" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required minLength="6" />
+                      <input type="password" id="confirmarSenha" name="confirmarSenha" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required minLength="6" />
+                      {fieldErrors.confirmarSenha && <span className="text-red-500 text-xs font-bold">{fieldErrors.confirmarSenha}</span>}
                     </div>
                   </div>
                   
@@ -875,7 +1151,8 @@ export default function App() {
                 <form className="space-y-4">
                   <div>
                     <label htmlFor="empresaOrcamento" className="block text-sm font-bold text-slate-700 mb-1">Nome da Empresa *</label>
-                    <input type="text" id="empresaOrcamento" name="empresaOrcamento" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                    <input type="text" id="empresaOrcamento" name="empresaOrcamento" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                    {fieldErrors.empresaOrcamento && <span className="text-red-500 text-xs font-bold">{fieldErrors.empresaOrcamento}</span>}
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
@@ -885,7 +1162,7 @@ export default function App() {
                     </div>
                     <div>
                       <label htmlFor="funcOrcamento" className="block text-sm font-bold text-slate-700 mb-1">Nº Funcionários *</label>
-                      <select id="funcOrcamento" name="funcOrcamento" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white text-slate-600" required>
+                      <select id="funcOrcamento" name="funcOrcamento" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white text-slate-600" required>
                         <option value="">Selecione...</option>
                         <option value="1-10">1 a 10</option>
                         <option value="11-50">11 a 50</option>
@@ -893,22 +1170,26 @@ export default function App() {
                         <option value="101-500">101 a 500</option>
                         <option value="500+">Mais de 500</option>
                       </select>
+                      {fieldErrors.funcOrcamento && <span className="text-red-500 text-xs font-bold">{fieldErrors.funcOrcamento}</span>}
                     </div>
                   </div>
                   
                   <div>
                     <label htmlFor="contatoOrcamento" className="block text-sm font-bold text-slate-700 mb-1">Nome para Contato *</label>
-                    <input type="text" id="contatoOrcamento" name="contatoOrcamento" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                    <input type="text" id="contatoOrcamento" name="contatoOrcamento" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                    {fieldErrors.contatoOrcamento && <span className="text-red-500 text-xs font-bold">{fieldErrors.contatoOrcamento}</span>}
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="emailOrcamento" className="block text-sm font-bold text-slate-700 mb-1">E-mail *</label>
-                      <input type="email" id="emailOrcamento" name="emailOrcamento" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      <input type="email" id="emailOrcamento" name="emailOrcamento" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      {fieldErrors.emailOrcamento && <span className="text-red-500 text-xs font-bold">{fieldErrors.emailOrcamento}</span>}
                     </div>
                     <div>
                       <label htmlFor="telefoneOrcamento" className="block text-sm font-bold text-slate-700 mb-1">Telefone *</label>
-                      <input type="tel" id="telefoneOrcamento" name="telefoneOrcamento" placeholder="(00) 00000-0000" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required />
+                      <input type="tel" id="telefoneOrcamento" name="telefoneOrcamento" onInput={handlePhoneInput} placeholder="(00) 00000-0000" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white" required maxLength="15" />
+                      {fieldErrors.telefoneOrcamento && <span className="text-red-500 text-xs font-bold">{fieldErrors.telefoneOrcamento}</span>}
                     </div>
                   </div>
                   
@@ -940,13 +1221,14 @@ export default function App() {
                   
                   <div>
                     <label htmlFor="urgenciaOrcamento" className="block text-sm font-bold text-slate-700 mb-1">Urgência *</label>
-                    <select id="urgenciaOrcamento" name="urgenciaOrcamento" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white text-slate-600" required>
+                    <select id="urgenciaOrcamento" name="urgenciaOrcamento" onInput={handleInputChange} className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-[#0F2C4A] outline-none transition bg-slate-50 focus:bg-white text-slate-600" required>
                       <option value="">Selecione...</option>
                       <option value="imediato">Imediato (em até 24h)</option>
                       <option value="urgente">Urgente (esta semana)</option>
                       <option value="normal">Normal (até 15 dias)</option>
                       <option value="planejamento">Planejamento (mais de 30 dias)</option>
                     </select>
+                    {fieldErrors.urgenciaOrcamento && <span className="text-red-500 text-xs font-bold">{fieldErrors.urgenciaOrcamento}</span>}
                   </div>
                   
                   <button type="submit" className="w-full bg-[#0F2C4A] text-white font-bold py-4 rounded-lg hover:bg-[#0A1F35] transition shadow-lg flex items-center justify-center gap-2 mt-4">
@@ -1174,15 +1456,13 @@ export default function App() {
             
             {/* Header da Página */}
             <div className="mb-16 text-center">
-              <h2 className="text-4xl font-extrabold text-[#0F2C4A] mb-4">Nossos Serviços</h2>
-              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mb-6">
+              <h2 className="text-4xl md:text-5xl font-black text-[#0F2C4A] mb-4">Nossos Serviços</h2>
+              <p className="text-slate-600 mt-2">A HCO oferece um portfólio completo de soluções em Medicina e Segurança do Trabalho, garantindo conformidade legal e promovendo a saúde dos seus colaboradores.</p>
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mt-3">
                 <button onClick={() => scrollToSection('home')} className="hover:text-[#0F2C4A] transition-colors">Home</button>
                 <ChevronRight size={16} className="text-slate-400" />
                 <span className="font-semibold text-slate-700">Serviços</span>
               </div>
-              <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                A HCO oferece um portfólio completo de soluções em Medicina e Segurança do Trabalho, garantindo conformidade legal e promovendo a saúde dos seus colaboradores.
-              </p>
             </div>
 
             {/* Grupo 1: Gestão Técnica e Documental */}
@@ -1650,6 +1930,109 @@ export default function App() {
         </div>
       )}
 
+      {/* --- PÁGINA DIRETRIZES --- */}
+      {currentPage === 'diretrizes' && (
+        <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+              
+              <div className="mb-16 text-center">
+                <h2 className="text-3xl md:text-4xl font-extrabold text-[#0F2C4A] mb-4">Diretrizes Essenciais</h2>
+                <p className="text-slate-600 mt-2 max-w-2xl mx-auto">
+                  Nossa atuação é pautada em pilares fundamentais que garantem a excelência na Gestão Ocupacional, integrando segurança, saúde e performance.
+                </p>
+                <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mt-3">
+                  <button onClick={() => scrollToSection('home')} className="hover:text-[#0F2C4A] transition-colors">Home</button>
+                  <ChevronRight size={16} className="text-slate-400" />
+                  <span className="font-semibold text-slate-700">Diretrizes</span>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[
+                  {
+                    title: "Prevenção de Acidentes",
+                    subtitle: "e Doenças Ocupacionais",
+                    icon: ShieldAlert,
+                    desc: "Atuamos na identificação proativa de riscos e na implementação de barreiras de proteção. Nosso foco é criar uma cultura de segurança onde a prevenção é prioridade, reduzindo drasticamente a incidência de sinistros e afastamentos.",
+                    color: "text-red-600",
+                    bg: "bg-red-50"
+                  },
+                  {
+                    title: "Promoção da Saúde",
+                    subtitle: "e Bem-estar",
+                    icon: Heart,
+                    desc: "Vamos além dos exames obrigatórios. Incentivamos programas de qualidade de vida, saúde mental e ergonomia, entendendo que colaboradores saudáveis e valorizados são o maior ativo de qualquer organização.",
+                    color: "text-pink-600",
+                    bg: "bg-pink-50"
+                  },
+                  {
+                    title: "Produtividade e Eficiência",
+                    subtitle: "Operacional",
+                    icon: TrendingUp,
+                    desc: "Ambientes seguros reduzem o absenteísmo e o presenteísmo. Otimizamos processos de SST para que a segurança não seja um entrave, mas sim um alavancador de performance e resultados sustentáveis.",
+                    color: "text-blue-600",
+                    bg: "bg-blue-50"
+                  },
+                  {
+                    title: "Conformidade Legal",
+                    subtitle: "Gestão SST",
+                    icon: Gavel,
+                    desc: "Garantimos o cumprimento rigoroso das Normas Regulamentadoras (NRs) e obrigações do eSocial. Nossa gestão blinda sua empresa contra multas e passivos trabalhistas, assegurando tranquilidade jurídica.",
+                    color: "text-slate-700",
+                    bg: "bg-slate-100"
+                  },
+                  {
+                    title: "Gestão Integrada",
+                    subtitle: "PGR + PCMSO",
+                    icon: FileTextIcon,
+                    desc: "Conectamos a engenharia de segurança à medicina do trabalho. O inventário de riscos do PGR orienta precisamente os exames do PCMSO, criando um ciclo de gestão coerente, econômico e eficaz.",
+                    color: "text-green-600",
+                    bg: "bg-green-50"
+                  },
+                  {
+                    title: "Monitoramento Contínuo",
+                    subtitle: "e Indicadores",
+                    icon: BarChart,
+                    desc: "Não gerenciamos o que não medimos. Utilizamos indicadores de desempenho (KPIs) para monitorar a saúde da sua empresa em tempo real, permitindo ações corretivas rápidas e melhoria contínua.",
+                    color: "text-purple-600",
+                    bg: "bg-purple-50"
+                  }
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-white border border-slate-100 rounded-2xl p-8">
+                    <div className={`w-14 h-14 ${item.bg} ${item.color} rounded-xl flex items-center justify-center mb-6`}>
+                      <item.icon size={28} />
+                    </div>
+                    <h3 className="text-xl font-bold text-[#0F2C4A] leading-tight">
+                      {item.title}
+                      <span className="block text-sm font-medium text-slate-500 mt-1">{item.subtitle}</span>
+                    </h3>
+                    <div className="w-12 h-1 bg-[#0F2C4A]/10 rounded-full my-4"></div>
+                    <p className="text-slate-600 text-sm leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-16 bg-[#0F2C4A] rounded-2xl p-8 md:p-12 text-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                <div className="relative z-10">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Compromisso com a Excelência</h3>
+                  <p className="text-blue-100 max-w-2xl mx-auto mb-8">
+                    Nossas diretrizes não são apenas palavras, são a base de cada atendimento, laudo e treinamento que realizamos.
+                  </p>
+                  <button onClick={() => scrollToSection('contato')} className="bg-white text-[#0F2C4A] font-bold py-3 px-8 rounded-full hover:bg-blue-50 transition shadow-lg inline-flex items-center gap-2">
+                    Fale com um Especialista <ArrowRight size={18} />
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* --- PÁGINA SITEMAP --- */}
       {currentPage === 'sitemap' && (
         <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
@@ -1683,6 +2066,7 @@ export default function App() {
                     <li><button onClick={() => scrollToSection('gestao')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Gestão de Saúde</button></li>
                     <li><button onClick={() => scrollToSection('orientacoes')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Dicas e Orientações</button></li>
                     <li><button onClick={() => scrollToSection('normativas')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Normativas (NRs)</button></li>
+                    <li><button onClick={() => scrollToSection('diretrizes')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Diretrizes Essenciais</button></li>
                     <li><button onClick={() => scrollToSection('politicadeprivacidade')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Política de Privacidade</button></li>
                     <li><button onClick={() => scrollToSection('sitemap')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Mapa do Site</button></li>
                   </ul>
@@ -1699,9 +2083,27 @@ export default function App() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {/* Section 1: Logo & About */}
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="bg-white text-[#0F2C4A] p-1.5 rounded font-bold text-lg">HCO</div>
-                <h2 className="text-white font-bold text-lg">HealthyCare Occupational</h2>
+              <div className="flex items-center gap-2 cursor-pointer mb-4" onClick={() => scrollToSection('home')}>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="5473 6038 504 506" 
+                  className="h-12 w-auto"
+                  style={{ shapeRendering: 'geometricPrecision', textRendering: 'geometricPrecision', imageRendering: 'optimizeQuality', fillRule: 'evenodd', clipRule: 'evenodd' }}
+                >
+                  <rect fill="#FFFFFF" x="5473" y="6038" width="504" height="506" rx="59" ry="59"/>
+                  <polygon fill="#0F2C4A" points="5718,6123 5663,6123 5663,6228 5548,6228 5548,6283 5663,6283 5718,6283 5718,6228 "/>
+                  <polygon fill="#0F2C4A" points="5733,6123 5788,6123 5788,6228 5903,6228 5903,6283 5788,6283 5733,6283 5733,6228 "/>
+                  <polygon fill="#0F2C4A" points="5733,6458 5788,6458 5788,6353 5903,6353 5903,6298 5788,6298 5733,6298 5733,6353 "/>
+                  <polygon fill="#0F2C4A" points="5718,6458 5663,6458 5663,6353 5548,6353 5548,6298 5663,6298 5718,6298 5718,6353 "/>
+                </svg>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-5xl font-black text-white leading-none" style={{ WebkitTextStroke: '1px #ffffff' }}>HCO</h1>
+                  <div className="flex flex-col text-[10px] font-bold text-[#A6A6A6] leading-tight tracking-wider">
+                    <span>MEDICINA</span>
+                    <span>E SEGURANÇA</span>
+                    <span>DO TRABALHO</span>
+                  </div>
+                </div>
               </div>
               <p className="text-sm leading-relaxed mb-4">Medicina do Trabalho com excelência, cuidando da saúde dos seus colaboradores e da conformidade legal da sua empresa.</p>
             </div>
@@ -1710,8 +2112,7 @@ export default function App() {
             <div>
               <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Serviços</h4>
               <ul className="space-y-2 text-sm">
-                <li><button onClick={() => scrollToSection('resultados')} className="hover:text-white transition text-left">Resultados de Exames</button></li>
-                <li><button onClick={() => scrollToSection('orientacoes')} className="hover:text-white transition text-left">Dicas e Orientações</button></li>
+              <li><button onClick={() => scrollToSection('orientacoes')} className="hover:text-white transition text-left">Dicas e Orientações</button></li>
                 <li><button onClick={() => scrollToSection('socialegestaosst')} className="hover:text-white transition text-left">eSocial e Gestão SST</button></li>
                 <li><button onClick={() => scrollToSection('gestao')} className="hover:text-white transition text-left">Gestão de Saúde</button></li>
                 <li><button onClick={() => scrollToSection('normativas')} className="hover:text-white transition text-left">Normativas</button></li>
@@ -1735,8 +2136,8 @@ export default function App() {
               <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Redes Sociais</h4>
               <div className="flex gap-4">
                 <a href="#" aria-label="Facebook" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Facebook size={20} /></a>
-                <a href="#" aria-label="Instagram" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Instagram size={20} /></a>
-                <a href="#" aria-label="LinkedIn" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Linkedin size={20} /></a>
+                <a href="https://www.instagram.com/clinicahco" aria-label="Instagram" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Instagram size={20} /></a>
+                <a href="https://www.linkedin.com/in/clinica-hco-medicina-e-seguran%C3%A7a-do-trabalho-19a958399/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Linkedin size={20} /></a>
                 <a href="#" aria-label="YouTube" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Youtube size={20} /></a>
               </div>
             </div>
@@ -1755,7 +2156,7 @@ export default function App() {
               <span className="text-slate-600">|</span>
               <a href="#" className="hover:text-white transition">LGPD</a>
               <span className="text-slate-600">|</span>
-              <a href="#" className="hover:text-white transition">Direitos Autorais</a>
+              <button onClick={() => scrollToSection('diretrizes')} className="hover:text-white transition">Diretrizes</button>
               <span className="text-slate-600">|</span>
               <button onClick={() => scrollToSection('sitemap')} className="hover:text-white transition">Mapa do Site</button>
               </div>
