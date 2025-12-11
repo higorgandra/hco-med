@@ -161,7 +161,7 @@ export default function App() {
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
             {[
               { label: 'Home', id: 'inicio' },
-              { label: 'A Clínica', id: 'inicio' },
+              { label: 'A Clínica', id: 'clinica' },
               { label: 'Nossos Serviços', id: 'servicos' },
               { label: 'Dicas e Orientações', id: 'orientacoes' },
               { label: 'Contato', id: 'contato' }
@@ -193,7 +193,7 @@ export default function App() {
             <div className="flex flex-col p-4 gap-4">
               {[
                 { label: 'Home', id: 'inicio' },
-                { label: 'A Clínica', id: 'inicio' },
+                { label: 'A Clínica', id: 'clinica' },
                 { label: 'Nossos Serviços', id: 'servicos' },
                 { label: 'Dicas e Orientações', id: 'orientacoes' },
                 { label: 'Contato', id: 'contato' },
@@ -1669,7 +1669,7 @@ export default function App() {
                   <h3 className="text-xl font-bold text-[#0F2C4A] mb-4 border-b border-slate-100 pb-2">Institucional</h3>
                   <ul className="space-y-3">
                     <li><button onClick={() => scrollToSection('home')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Home</button></li>
-                    <li><button onClick={() => scrollToSection('inicio')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> A Clínica</button></li>
+                    <li><button onClick={() => scrollToSection('clinica')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> A Clínica</button></li>
                     <li><button onClick={() => scrollToSection('contato')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Contato</button></li>
                     <li><button onClick={() => scrollToSection('cadastro')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Cadastre sua Empresa</button></li>
                   </ul>
