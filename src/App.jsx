@@ -4,7 +4,8 @@ import {
   CheckCircle, Users, Building, Phone, Mail, MapPin, 
   ChevronRight, ArrowRight, Shield, Stethoscope, Eye, 
   Ear, Wind, Beaker, Truck, ClipboardList, BookOpen, ChevronDown,
-  HardHat, TrendingUp, Handshake
+  HardHat, TrendingUp, Handshake, Facebook, Instagram, Linkedin, Youtube, Copyright,
+  Gavel, FileCheck, Flame, Zap, Package, Settings, Thermometer, User, Minimize2, ArrowUpCircle, Clock, Send
 } from 'lucide-react';
 
 export default function App() {
@@ -18,6 +19,18 @@ export default function App() {
     
     if (id === 'orientacoes') {
       setCurrentPage('orientacoes');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (id === 'servicos') {
+      setCurrentPage('servicos');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (id === 'politicadeprivacidade') {
+      setCurrentPage('politicadeprivacidade');
       window.scrollTo(0, 0);
       return;
     }
@@ -40,9 +53,9 @@ export default function App() {
       {/* --- HEADER --- */}
       <header className="fixed w-full bg-white shadow-md z-50">
         <div className="bg-white text-blue-900 text-xs py-1 border-b border-blue-50">
-          <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="max-w-6xl mx-auto px-4 flex justify-between items-center">
             <div className="flex items-center gap-3 font-medium">
-              <button className="hover:text-blue-600 transition-colors">Política de Privacidade</button>
+              <button onClick={() => scrollToSection('politicadeprivacidade')} className="hover:text-blue-600 transition-colors">Política de Privacidade</button>
             </div>
             <div className="hidden md:flex items-center gap-4 font-medium">
               <a href="https://wa.me/5571983156060" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-blue-600 transition-colors"><Phone size={12} className="text-blue-600" /> (71) 98315-6060</a>
@@ -50,7 +63,7 @@ export default function App() {
             </div>
           </div>
         </div>
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => scrollToSection('home')}>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
@@ -65,7 +78,7 @@ export default function App() {
               <polygon fill="#FEFEFE" points="5718,6458 5663,6458 5663,6353 5548,6353 5548,6298 5663,6298 5718,6298 5718,6353 "/>
             </svg>
             <div>
-              <h1 className="text-xl font-bold text-blue-900 leading-none">MEDICINA</h1>
+              <h1 className="text-xl font-bold text-blue-900 leading-none">HCO - MEDICINA</h1>
               <p className="text-xs text-blue-500 font-semibold tracking-wider">E SEGURANÇA DO TRABALHO</p>
             </div>
           </div>
@@ -75,7 +88,7 @@ export default function App() {
             {[
               { label: 'Home', id: 'inicio' },
               { label: 'A Clínica', id: 'inicio' },
-              { label: 'Nossos Serviços', id: 'esocial' },
+              { label: 'Nossos Serviços', id: 'servicos' },
               { label: 'Orientações para Exames', id: 'orientacoes' },
               { label: 'Contato', id: 'contato' }
             ].map((item) => (
@@ -107,7 +120,7 @@ export default function App() {
               {[
                 { label: 'Home', id: 'inicio' },
                 { label: 'A Clínica', id: 'inicio' },
-                { label: 'Nossos Serviços', id: 'esocial' },
+                { label: 'Nossos Serviços', id: 'servicos' },
                 { label: 'Orientações para Exames', id: 'orientacoes' },
                 { label: 'Contato', id: 'contato' },
                 { label: 'Exames', id: 'resultados' }
@@ -136,7 +149,7 @@ export default function App() {
           alt="Engenheiro de Segurança" 
           className="hidden lg:block absolute bottom-0 right-0 lg:right-10 xl:right-32 max-h-[90%] w-auto z-10"
         /> */}
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-6xl mx-auto px-4 relative z-10">
           <div className="max-w-3xl space-y-6 bg-slate-900/40 backdrop-blur-md border border-white/10 p-6 md:p-10 rounded-3xl shadow-2xl">
             <span className="bg-blue-500/30 text-blue-100 border border-blue-400/30 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">
               Soluções em Saúde Corporativa
@@ -166,7 +179,7 @@ export default function App() {
 
       {/* --- 3 PILARES DA GESTÃO --- */}
       <section id="resultados" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900">
               3 Pilares da Gestão Ocupacional
@@ -176,35 +189,37 @@ export default function App() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Pilar 1 */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition text-center border border-slate-100 group">
-              <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <HardHat className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
+          <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+            <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+              {/* Pilar 1 */}
+              <div className="p-8 md:p-12 text-center group hover:bg-slate-50 transition duration-300">
+                <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
+                  <HardHat className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
+                </div>
+                <p className="text-lg font-bold text-slate-800 leading-snug">
+                  Prevenção de acidentes e doenças ocupacionais
+                </p>
               </div>
-              <p className="text-lg font-bold text-slate-800 leading-snug">
-                Prevenção de acidentes e doenças ocupacionais
-              </p>
-            </div>
 
-            {/* Pilar 2 */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition text-center border border-slate-100 group">
-              <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <TrendingUp className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
+              {/* Pilar 2 */}
+              <div className="p-8 md:p-12 text-center group hover:bg-slate-50 transition duration-300">
+                <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
+                  <TrendingUp className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
+                </div>
+                <p className="text-lg font-bold text-slate-800 leading-snug">
+                  Aumento da produtividade e eficiência
+                </p>
               </div>
-              <p className="text-lg font-bold text-slate-800 leading-snug">
-                Aumento da produtividade e eficiência
-              </p>
-            </div>
 
-            {/* Pilar 3 */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition text-center border border-slate-100 group">
-              <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <Handshake className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
+              {/* Pilar 3 */}
+              <div className="p-8 md:p-12 text-center group hover:bg-slate-50 transition duration-300">
+                <div className="w-20 h-20 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-600 transition-colors duration-300">
+                  <Handshake className="text-blue-600 group-hover:text-white transition-colors duration-300" size={36} strokeWidth={1.5} />
+                </div>
+                <p className="text-lg font-bold text-slate-800 leading-snug">
+                  Promoção de saúde e bem-estar dos colaboradores
+                </p>
               </div>
-              <p className="text-lg font-bold text-slate-800 leading-snug">
-                Promoção de saúde e bem-estar dos colaboradores
-              </p>
             </div>
           </div>
 
@@ -221,7 +236,7 @@ export default function App() {
 
       {/* --- ESOCIAL --- */}
       <section id="esocial" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <span className="text-blue-600 font-bold tracking-wider text-sm">OBRIGATORIEDADE</span>
             <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mt-2">eSocial e Gestão SST</h2>
@@ -282,7 +297,7 @@ export default function App() {
 
       {/* --- DICAS DE SAÚDE --- */}
       <section id="dicas" className="py-20 bg-blue-50">
-        <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-extrabold text-slate-900 mb-12 text-center">Dicas e Orientações</h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -308,7 +323,7 @@ export default function App() {
 
       {/* --- NORMATIVAS (NRs) --- */}
       <section id="normativas" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12">
             <div>
               <h2 className="text-3xl font-extrabold text-slate-900">Normas Regulamentadoras</h2>
@@ -340,7 +355,7 @@ export default function App() {
 
       {/* --- GESTÃO & CADASTRO --- */}
       <section id="cadastro" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16">
             
             {/* Form de Cadastro */}
@@ -434,29 +449,105 @@ export default function App() {
 
       {/* --- CONTATO --- */}
       <section id="contato" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-           <div className="text-center mb-12">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-extrabold text-slate-900">Entre em Contato</h2>
-            <p className="text-slate-600 mt-2">Nossa equipe está pronta para atender sua empresa.</p>
+            <p className="text-slate-600 mt-2">Nossa equipe está pronta para atender sua empresa</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="p-6 bg-slate-50 rounded-xl">
-              <Phone className="mx-auto text-blue-600 mb-4" size={32} />
-              <h4 className="font-bold text-slate-800 mb-2">Telefone / WhatsApp</h4>
-              <a href="https://wa.me/5571983156060" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 block">(71) 98315-6060</a>
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-3 rounded-lg text-blue-600">
+                  <Phone size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-lg mb-1">Telefone</h4>
+                  <p className="text-slate-600">(71) 98315-6060</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-3 rounded-lg text-blue-600">
+                  <Mail size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-lg mb-1">E-mail</h4>
+                  <p className="text-slate-600">contato@hco.com.br</p>
+                  <p className="text-slate-600">atendimento@hco.com.br</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-3 rounded-lg text-blue-600">
+                  <MapPin size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-lg mb-1">Endereço</h4>
+                  <p className="text-slate-600">Av. Paulista, 1000</p>
+                  <p className="text-slate-600">São Paulo - SP, 01310-100</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-3 rounded-lg text-blue-600">
+                  <Clock size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-lg mb-1">Horário de Atendimento</h4>
+                  <p className="text-slate-600">Segunda a Sexta: 8h às 18h</p>
+                  <p className="text-slate-600">Sábado: 8h às 12h</p>
+                </div>
+              </div>
             </div>
-            <div className="p-6 bg-slate-50 rounded-xl">
-              <Mail className="mx-auto text-blue-600 mb-4" size={32} />
-              <h4 className="font-bold text-slate-800 mb-2">E-mail</h4>
-              <p className="text-slate-600">contato@hco.com.br</p>
-              <p className="text-slate-600">atendimento@hco.com.br</p>
-            </div>
-            <div className="p-6 bg-slate-50 rounded-xl">
-              <MapPin className="mx-auto text-blue-600 mb-4" size={32} />
-              <h4 className="font-bold text-slate-800 mb-2">Endereço</h4>
-              <p className="text-slate-600">Av. Paulista, 1000</p>
-              <p className="text-slate-600">São Paulo - SP, 01310-100</p>
+
+            {/* Contact Form */}
+            <div className="bg-slate-50 p-8 rounded-2xl shadow-lg">
+              <form className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="nome" className="text-sm font-bold text-slate-700">Nome Completo *</label>
+                    <input type="text" id="nome" name="nome" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="empresa" className="text-sm font-bold text-slate-700">Empresa *</label>
+                    <input type="text" id="empresa" name="empresa" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white" required />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-bold text-slate-700">E-mail *</label>
+                    <input type="email" id="email" name="email" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="telefone" className="text-sm font-bold text-slate-700">Telefone *</label>
+                    <input type="tel" id="telefone" name="telefone" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white" required />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="assunto" className="text-sm font-bold text-slate-700">Assunto *</label>
+                  <select id="assunto" name="assunto" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-slate-600 bg-white" required>
+                    <option value="">Selecione um assunto</option>
+                    <option value="exames">Exames Ocupacionais</option>
+                    <option value="programas">Programas de SST</option>
+                    <option value="treinamentos">Treinamentos</option>
+                    <option value="consultoria">Consultoria</option>
+                    <option value="outros">Outros</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="mensagem" className="text-sm font-bold text-slate-700">Mensagem *</label>
+                  <textarea id="mensagem" name="mensagem" rows="5" className="w-full border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white" required></textarea>
+                </div>
+
+                <button type="submit" className="w-full bg-blue-600 text-white font-bold py-4 rounded-lg hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-2">
+                  <Send size={20} /> Enviar Mensagem
+                </button>
+              </form>
             </div>
           </div>
         </div>
@@ -467,7 +558,7 @@ export default function App() {
       {/* --- PÁGINA DE ORIENTAÇÕES --- */}
       {currentPage === 'orientacoes' && (
         <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
-          <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto px-4">
             <div className="max-w-3xl mx-auto">
               <div className="mb-12 text-center">
                 <h2 className="text-3xl font-extrabold text-slate-900">Orientações para Exames</h2>
@@ -511,53 +602,278 @@ export default function App() {
         </div>
       )}
 
+      {/* --- PÁGINA DE SERVIÇOS --- */}
+      {currentPage === 'servicos' && (
+        <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
+          <div className="max-w-6xl mx-auto px-4">
+            
+            {/* Header da Página */}
+            <div className="mb-16 text-center">
+              <h2 className="text-4xl font-extrabold text-slate-900 mb-4">Nossos Serviços</h2>
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mb-6">
+                <button onClick={() => scrollToSection('home')} className="hover:text-blue-600 transition-colors">Home</button>
+                <ChevronRight size={16} className="text-slate-400" />
+                <span className="font-semibold text-slate-700">Serviços</span>
+              </div>
+              <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                A HCO oferece um portfólio completo de soluções em Medicina e Segurança do Trabalho, garantindo conformidade legal e promovendo a saúde dos seus colaboradores.
+              </p>
+            </div>
+
+            {/* Grupo 1: Gestão Técnica e Documental */}
+            <div className="mb-20">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-blue-100 text-blue-600 rounded-xl"><ClipboardList size={28} /></div>
+                <h3 className="text-2xl font-bold text-slate-800">Gestão Técnica e Documental</h3>
+              </div>
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[
+                  { title: "PGR", desc: "O Programa de Gerenciamento de Riscos (PGR) visa à melhoria contínua das condições da exposição dos trabalhadores por meio de ações multidisciplinares e sistematizadas.", icon: Shield },
+                  { title: "PCMSO", desc: "Programa de Controle Médico de Saúde Ocupacional. Previne e diagnostica precocemente danos à saúde decorrentes do trabalho. Elaborado exclusivamente por médicos do trabalho.", icon: Stethoscope },
+                  { title: "LTCAT", desc: "Laudo Técnico das Condições do Ambiente de Trabalho. Avalia a exposição a agentes insalubres e perigosos para fins previdenciários.", icon: FileText },
+                  { title: "Gestão eSocial", desc: "Envio dos eventos SST (S-2210, S-2220, S-2240). Garantimos a conformidade com o governo federal, evitando multas e passivos trabalhistas.", icon: Activity },
+                  { title: "PPP", desc: "Perfil Profissiográfico Previdenciário. Histórico laboral do trabalhador, essencial para requerimento de aposentadoria especial junto ao INSS.", icon: BookOpen },
+                  { title: "Laudos Técnicos", desc: "Laudos de Insalubridade e Periculosidade exigidos pelo Ministério do Trabalho para verificação de condições de risco e adicionais salariais.", icon: FileCheck },
+                  { title: "Perícias Trabalhistas", desc: "Assistência técnica em processos judiciais para esclarecer questões relacionadas ao ambiente de trabalho e saúde ocupacional.", icon: Gavel },
+                  { title: "Plano de Emergência (PAE)", desc: "Diretrizes técnicas e administrativas para atuação em situações de emergência, preservando vidas e patrimônio.", icon: AlertTriangle },
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 border border-slate-100 flex flex-col">
+                    <div className="mb-6 text-blue-600 bg-blue-50 w-14 h-14 rounded-lg flex items-center justify-center">
+                      <item.icon size={28} />
+                    </div>
+                    <h4 className="text-xl font-bold text-slate-900 mb-3">{item.title}</h4>
+                    <p className="text-slate-600 text-sm leading-relaxed flex-grow">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Grupo 2: Medicina e Diagnóstico */}
+            <div className="mb-20">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-green-100 text-green-600 rounded-xl"><Stethoscope size={28} /></div>
+                <h3 className="text-2xl font-bold text-slate-800">Medicina e Diagnósticos</h3>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 border border-slate-100">
+                  <div className="flex items-start gap-6">
+                    <div className="text-green-600 bg-green-50 w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Users size={28} />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-slate-900 mb-4">Atendimento Clínico e Exames</h4>
+                      <p className="text-slate-600 text-sm mb-4">Emissão de ASO (Atestado de Saúde Ocupacional) e realização de exames complementares completos:</p>
+                      <ul className="grid grid-cols-2 gap-2 text-sm text-slate-700">
+                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Exames Laboratoriais</li>
+                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Audiometria</li>
+                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Raio-X</li>
+                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Eletroencefalograma</li>
+                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Eletrocardiograma</li>
+                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Espirometria</li>
+                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Acuidade Visual</li>
+                        <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Teste Ergométrico</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 border border-slate-100">
+                  <div className="flex items-start gap-6">
+                    <div className="text-green-600 bg-green-50 w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Beaker size={28} />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-slate-900 mb-4">Medições Ambientais</h4>
+                      <p className="text-slate-600 text-sm mb-4">Avaliações quantitativas com equipamentos calibrados para mensurar a exposição dos trabalhadores a agentes nocivos.</p>
+                      <p className="text-slate-600 text-sm">Essenciais para LTCAT, PGR e Laudos de Insalubridade. Realizamos medições de:</p>
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {['Ruído', 'Calor', 'Vibrações', 'Poeiras', 'Fumos Metálicos', 'Vapores Químicos'].map(tag => (
+                          <span key={tag} className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-bold">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Grupo 3: Treinamentos */}
+            <div className="mb-12">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-orange-100 text-orange-600 rounded-xl"><HardHat size={28} /></div>
+                <h3 className="text-2xl font-bold text-slate-800">Treinamentos Normativos (NRs)</h3>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { nr: "NR-06", title: "EPI - Equipamentos de Proteção", icon: Shield },
+                  { nr: "NR-10", title: "Segurança em Eletricidade", icon: Zap },
+                  { nr: "NR-11", title: "Transporte e Movimentação", icon: Package },
+                  { nr: "NR-12", title: "Máquinas e Equipamentos", icon: Settings },
+                  { nr: "NR-13", title: "Caldeiras e Vasos de Pressão", icon: Thermometer },
+                  { nr: "NR-17", title: "Ergonomia", icon: User },
+                  { nr: "NR-20", title: "Inflamáveis e Combustíveis", icon: Flame },
+                  { nr: "NR-33", title: "Espaços Confinados", icon: Minimize2 },
+                  { nr: "NR-35", title: "Trabalho em Altura", icon: ArrowUpCircle },
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200 hover:border-orange-400 hover:shadow-md transition group flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-orange-500 group-hover:text-white transition duration-300 flex-shrink-0">
+                      <item.icon size={20} />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-orange-600 block mb-1">{item.nr}</span>
+                      <h4 className="font-bold text-slate-800 text-sm leading-tight">{item.title}</h4>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* --- PÁGINA DE POLÍTICA DE PRIVACIDADE --- */}
+      {currentPage === 'politicadeprivacidade' && (
+        <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8 md:p-12">
+              <div className="mb-8 text-center">
+                <h2 className="text-3xl font-extrabold text-slate-900 mb-6">Política de Privacidade</h2>
+                <div className="flex items-center justify-center gap-2 text-sm text-slate-500 mt-3">
+                  <button onClick={() => scrollToSection('home')} className="hover:text-blue-600 transition-colors">Home</button>
+                  <ChevronRight size={16} className="text-slate-400" />
+                  <span className="font-semibold text-slate-700">Política de Privacidade</span>
+                </div>
+              </div>
+              
+              <div className="space-y-6 text-slate-600 text-justify leading-relaxed">
+                <p>A sua privacidade é importante para nós. É política da HCO respeitar a sua privacidade em relação a qualquer informação sua que possamos coletar no site HCO, e outros sites que possuímos e operamos.</p>
+                <p>Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e legais, com o seu conhecimento e consentimento. Também informamos por que estamos coletando e como será usado.</p>
+                <p>Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos dentro de meios comercialmente aceitáveis para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não autorizados.</p>
+                <p>Não compartilhamos informações de identificação pessoal publicamente ou com terceiros, exceto quando exigido por lei.</p>
+                <p>O nosso site pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controle sobre o conteúdo e práticas desses sites e não podemos aceitar responsabilidade por suas respectivas políticas de privacidade.</p>
+                <p>Você é livre para recusar a nossa solicitação de informações pessoais, entendendo que talvez não possamos fornecer alguns dos serviços desejados.</p>
+                <p>O uso continuado de nosso site será considerado como aceitação de nossas práticas em torno de privacidade e informações pessoais. Se você tiver alguma dúvida sobre como lidamos com dados do usuário e informações pessoais, entre em contato conosco.</p>
+                
+                <h3 className="text-xl font-bold text-slate-800 mt-8">Política de Cookies HCO</h3>
+                <p><strong>O que são cookies?</strong><br/>
+                Como é prática comum em quase todos os sites profissionais, este site usa cookies, que são pequenos arquivos baixados no seu computador, para melhorar sua experiência. Esta página descreve quais informações eles coletam, como as usamos e por que às vezes precisamos armazenar esses cookies. Também compartilharemos como você pode impedir que esses cookies sejam armazenados, no entanto, isso pode fazer o downgrade ou 'quebrar' certos elementos da funcionalidade do site.</p>
+                
+                <p><strong>Como usamos os cookies?</strong><br/>
+                Utilizamos cookies por vários motivos, detalhados abaixo. Infelizmente, na maioria dos casos, não existem opções padrão do setor para desativar os cookies sem desativar completamente a funcionalidade e os recursos que eles adicionam a este site. É recomendável que você deixe todos os cookies se não tiver certeza se precisa ou não deles, caso sejam usados para fornecer um serviço que você usa.</p>
+                
+                <p><strong>Desativar cookies</strong><br/>
+                Você pode impedir a configuração de cookies ajustando as configurações do seu navegador (consulte a Ajuda do navegador para saber como fazer isso). Esteja ciente de que a desativação de cookies afetará a funcionalidade deste e de muitos outros sites que você visita. A desativação de cookies geralmente resultará na desativação de determinadas funcionalidades e recursos deste site. Portanto, é recomendável que você não desative os cookies.</p>
+                
+                <p><strong>Cookies que definimos</strong></p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li><strong>Cookies relacionados à conta:</strong> Se você criar uma conta conosco, usaremos cookies para o gerenciamento do processo de inscrição e administração geral. Esses cookies geralmente serão excluídos quando você sair do sistema, porém, em alguns casos, eles poderão permanecer posteriormente para lembrar as preferências do seu site ao sair.</li>
+                  <li><strong>Cookies relacionados ao login:</strong> Utilizamos cookies quando você está logado, para que possamos lembrar dessa ação. Isso evita que você precise fazer login sempre que visitar uma nova página. Esses cookies são normalmente removidos ou limpos quando você efetua logout para garantir que você possa acessar apenas a recursos e áreas restritas ao efetuar login.</li>
+                  <li><strong>Cookies relacionados a boletins por e-mail:</strong> Este site oferece serviços de assinatura de boletim informativo ou e-mail e os cookies podem ser usados para lembrar se você já está registrado e se deve mostrar determinadas notificações válidas apenas para usuários inscritos / não inscritos.</li>
+                  <li><strong>Cookies relacionados a pesquisas:</strong> Periodicamente, oferecemos pesquisas e questionários para fornecer informações interessantes, ferramentas úteis ou para entender nossa base de usuários com mais precisão. Essas pesquisas podem usar cookies para lembrar quem já participou numa pesquisa ou para fornecer resultados precisos após a alteração das páginas.</li>
+                  <li><strong>Cookies relacionados a formulários:</strong> Quando você envia dados por meio de um formulário como os encontrados nas páginas de contacto ou nos formulários de comentários, os cookies podem ser configurados para lembrar os detalhes do usuário para correspondência futura.</li>
+                  <li><strong>Cookies de preferências do site:</strong> Para proporcionar uma ótima experiência neste site, fornecemos a funcionalidade para definir suas preferências de como esse site é executado quando você o usa. Para lembrar suas preferências, precisamos definir cookies para que essas informações possam ser chamadas sempre que você interagir com uma página for afetada por suas preferências.</li>
+                </ul>
+
+                <h3 className="text-xl font-bold text-slate-800 mt-8">Cookies de Terceiros</h3>
+                <p>Em alguns casos especiais, também usamos cookies fornecidos por terceiros confiáveis. A seção a seguir detalha quais cookies de terceiros você pode encontrar através deste site.</p>
+                <p>Este site usa o Google Analytics, que é uma das soluções de análise mais difundidas e confiáveis da Web, para nos ajudar a entender como você usa o site e como podemos melhorar sua experiência. Esses cookies podem rastrear itens como quanto tempo você gasta no site e as páginas visitadas, para que possamos continuar produzindo conteúdo atraente.</p>
+                <p>Para mais informações sobre cookies do Google Analytics, consulte a página oficial do Google Analytics.</p>
+                <p>As análises de terceiros são usadas para rastrear e medir o uso deste site, para que possamos continuar produzindo conteúdo atrativo. Esses cookies podem rastrear itens como o tempo que você passa no site ou as páginas visitadas, o que nos ajuda a entender como podemos melhorar o site para você. Periodicamente, testamos novos recursos e fazemos alterações subtis na maneira como o site se apresenta. Quando ainda estamos testando novos recursos, esses cookies podem ser usados para garantir que você receba uma experiência consistente enquanto estiver no site, enquanto entendemos quais otimizações os nossos usuários mais apreciam. À medida que vendemos produtos, é importante entendermos as estatísticas sobre quantos visitantes de nosso site realmente compram e, portanto, esse é o tipo de dados que esses cookies rastrearão. Isso é importante para você, pois significa que podemos fazer previsões de negócios com precisão que nos permitem analizar nossos custos de publicidade e produtos para garantir o melhor preço possível.</p>
+                
+                <h3 className="text-xl font-bold text-slate-800 mt-8">Compromisso do Usuário</h3>
+                <p>O usuário se compromete a fazer uso adequado dos conteúdos e da informação que a HCO oferece no site e com caráter enunciativo, mas não limitativo:</p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>A) Não se envolver em atividades que sejam ilegais ou contrárias à boa fé a à ordem pública;</li>
+                  <li>B) Não difundir propaganda ou conteúdo de natureza racista, xenofóbica, ou casas de apostas, jogos de sorte e azar, qualquer tipo de pornografia ilegal, de apologia ao terrorismo ou contra os direitos humanos;</li>
+                  <li>C) Não causar danos aos sistemas físicos (hardwares) e lógicos (softwares) da HCO, de seus fornecedores ou terceiros, para introduzir ou disseminar vírus informáticos ou quaisquer outros sistemas de hardware ou software que sejam capazes de causar danos anteriormente mencionados.</li>
+                </ul>
+
+                <h3 className="text-xl font-bold text-slate-800 mt-8">Mais informações</h3>
+                <p>Esperemos que esteja esclarecido e, como mencionado anteriormente, se houver algo que você não tem certeza se precisa ou não, geralmente é mais seguro deixar os cookies ativados, caso interaja com um dos recursos que você usa em nosso site.</p>
+                <p className="mt-4 text-sm text-slate-500">Esta política é efetiva a partir de Set/2022.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* --- FOOTER --- */}
       <footer className="bg-slate-900 text-slate-400 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-1 md:col-span-2">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Section 1: Logo & About */}
+            <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="bg-blue-600 text-white p-1.5 rounded font-bold text-lg">HCO</div>
                 <h2 className="text-white font-bold text-lg">HealthyCare Occupational</h2>
               </div>
-              <p className="text-sm max-w-sm mb-4">Medicina do Trabalho com excelência, cuidando da saúde dos seus colaboradores e da conformidade legal da sua empresa.</p>
-              <div className="flex gap-4">
-                {/* Social Placeholders */}
-                <div className="w-8 h-8 bg-slate-800 rounded flex items-center justify-center hover:bg-blue-600 transition cursor-pointer">FB</div>
-                <a href="https://www.instagram.com/clinicahco" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-slate-800 rounded flex items-center justify-center hover:bg-blue-600 transition cursor-pointer text-inherit no-underline">IN</a>
-                <div className="w-8 h-8 bg-slate-800 rounded flex items-center justify-center hover:bg-blue-600 transition cursor-pointer">LN</div>
-              </div>
+              <p className="text-sm leading-relaxed mb-4">Medicina do Trabalho com excelência, cuidando da saúde dos seus colaboradores e da conformidade legal da sua empresa.</p>
             </div>
             
+            {/* Section 2: Serviços */}
             <div>
               <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Serviços</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#resultados" className="hover:text-blue-400 transition">Resultados de Exames</a></li>
-                <li><a href="#dicas" className="hover:text-blue-400 transition">Dicas de Saúde</a></li>
-                <li><a href="#normativas" className="hover:text-blue-400 transition">Normativas</a></li>
-                <li><a href="#gestao" className="hover:text-blue-400 transition">Gestão em SST</a></li>
+                <li><button onClick={() => scrollToSection('resultados')} className="hover:text-blue-400 transition text-left">Resultados de Exames</button></li>
+                <li><button onClick={() => scrollToSection('dicas')} className="hover:text-blue-400 transition text-left">Dicas de Saúde</button></li>
+                <li><button onClick={() => scrollToSection('normativas')} className="hover:text-blue-400 transition text-left">Normativas</button></li>
+                <li><button onClick={() => scrollToSection('esocial')} className="hover:text-blue-400 transition text-left">Gestão em SST</button></li>
               </ul>
             </div>
             
+            {/* Section 3: Links Úteis */}
             <div>
                <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Links Úteis</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-blue-400 transition">Ministério do Trabalho</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">eSocial</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">CFM</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">ANAMT</a></li>
+                <li><a href="https://www.gov.br/trabalho-e-previdencia" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition">Ministério do Trabalho</a></li>
+                <li><a href="https://www.gov.br/esocial" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition">eSocial</a></li>
+                <li><a href="https://www.cfm.org.br" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition">Conselho Federal de Medicina</a></li>
+                <li><a href="https://www.anamt.org.br" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition">ANAMT</a></li>
               </ul>
+            </div>
+
+            {/* Section 4: Redes Sociais */}
+            <div>
+              <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Redes Sociais</h4>
+              <div className="flex gap-4">
+                <a href="#" aria-label="Facebook" className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition duration-300"><Facebook size={20} /></a>
+                <a href="#" aria-label="Instagram" className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition duration-300"><Instagram size={20} /></a>
+                <a href="#" aria-label="LinkedIn" className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition duration-300"><Linkedin size={20} /></a>
+                <a href="#" aria-label="YouTube" className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition duration-300"><Youtube size={20} /></a>
+              </div>
             </div>
           </div>
           
-          <div className="border-t border-slate-800 pt-8 text-xs text-center md:text-left flex flex-col md:flex-row justify-between items-center">
-            <p>© 2024 HCO - HealthyCare Occupational. Todos os direitos reservados.</p>
-            <div className="flex gap-4 mt-4 md:mt-0">
+          <div className="border-t border-slate-800 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 text-sm">
+              <div className="text-center md:text-left">
+                <p>© 2025 HCO - HealthyCare Occupational. Todos os direitos reservados.</p>
+                <p className="text-slate-500 mt-1">Desenvolvido com foco em gestão e saúde ocupacional.</p>
+              </div>
+              <div className="flex flex-wrap justify-center gap-4 text-sm">
               <a href="#" className="hover:text-white transition">Termos de Uso</a>
-              <span>|</span>
-              <a href="#" className="hover:text-white transition">Política de Privacidade</a>
-              <span>|</span>
+              <span className="text-slate-600">|</span>
+              <button onClick={() => scrollToSection('politicadeprivacidade')} className="hover:text-white transition">Política de Privacidade</button>
+              <span className="text-slate-600">|</span>
               <a href="#" className="hover:text-white transition">LGPD</a>
+              <span className="text-slate-600">|</span>
+              <a href="#" className="hover:text-white transition">Direitos Autorais</a>
+              </div>
+            </div>
+            
+            <div className="text-xs text-slate-600 text-center md:text-left leading-relaxed">
+              <p className="flex items-start justify-center md:justify-start gap-2">
+                <Copyright size={14} className="mt-0.5 flex-shrink-0" />
+                <span>
+                  Marca registrada HCO - HealthyCare Occupational. 
+                  O uso não autorizado do conteúdo, logotipo e materiais deste site é estritamente proibido e pode resultar em ações legais. 
+                  Todos os direitos de propriedade intelectual são reservados.
+                </span>
+              </p>
             </div>
           </div>
         </div>
