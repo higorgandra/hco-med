@@ -363,7 +363,7 @@ export default function App() {
         <>
           {/* --- HERO SECTION --- */}
           <section id="inicio" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-cover bg-center" style={{backgroundImage: 'url("https://i.postimg.cc/50Wg4vQJ/freepik-expand-40706.png")'}}>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0F2C4A] to-[#527088] opacity-50"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0F2C4A] to-[#527088] opacity-10"></div>
         {/* <img 
           src="https://i.postimg.cc/ZKYSYv6H/eng.png" 
           alt="Engenheiro de Segurança" 
@@ -393,6 +393,52 @@ export default function App() {
             </div>
             
             
+          </div>
+        </div>
+      </section>
+
+      {/* --- CONSULTA DE EXAMES --- */}
+      <section className="py-16 bg-white border-b border-slate-100">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16 bg-[#0F2C4A] p-8 md:p-10 rounded-3xl shadow-xl text-white relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+             <div className="relative z-10 text-center md:text-left">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2">Consulta de Exames</h2>
+                <p className="text-blue-100 text-lg">Acesse o sistema SOC para visualizar seus resultados e laudos.</p>
+             </div>
+             <div className="relative z-10">
+                <a 
+                  href="https://sistema.soc.com.br/WebSoc/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="bg-white text-[#0F2C4A] px-8 py-4 rounded-full font-bold hover:bg-blue-50 transition shadow-lg flex items-center gap-2"
+                >
+                  <FileText size={20} />
+                  Acessar Resultados
+                </a>
+             </div>
+          </div>
+
+          <div className="tipos-exames">
+            <h3 className="text-2xl font-bold text-[#0F2C4A] mb-8 text-center">Tipos de Exames Disponíveis</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 exames-grid">
+                {[
+                    { icon: "fas fa-user-md", title: "Exame Admissional", desc: "Avaliação médica inicial" },
+                    { icon: "fas fa-calendar-check", title: "Exame Periódico", desc: "Acompanhamento regular" },
+                    { icon: "fas fa-briefcase", title: "Mudança de Função", desc: "Avaliação para nova atividade" },
+                    { icon: "fas fa-sign-out-alt", title: "Exame Demissional", desc: "Avaliação de desligamento" },
+                    { icon: "fas fa-home", title: "Retorno ao Trabalho", desc: "Após afastamento" },
+                    { icon: "fas fa-stethoscope", title: "Exames Complementares", desc: "Laboratoriais e especializados" }
+                ].map((item, idx) => (
+                    <div key={idx} className="bg-slate-50 p-6 rounded-2xl text-center hover:bg-white hover:shadow-lg transition duration-300 border border-slate-100 group exame-item">
+                        <div className="w-12 h-12 mx-auto bg-[#0F2C4A]/10 text-[#0F2C4A] rounded-full flex items-center justify-center mb-4 group-hover:bg-[#0F2C4A] group-hover:text-white transition">
+                            <i className={item.icon + " text-xl"}></i>
+                        </div>
+                        <h4 className="font-bold text-slate-800 text-sm mb-2">{item.title}</h4>
+                        <p className="text-xs text-slate-500 leading-tight">{item.desc}</p>
+                    </div>
+                ))}
+            </div>
           </div>
         </div>
       </section>
