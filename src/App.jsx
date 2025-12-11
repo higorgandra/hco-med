@@ -363,7 +363,7 @@ export default function App() {
         <>
           {/* --- HERO SECTION --- */}
           <section id="inicio" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-cover bg-center" style={{backgroundImage: 'url("https://i.postimg.cc/50Wg4vQJ/freepik-expand-40706.png")'}}>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0F2C4A] to-[#527088] opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0F2C4A] to-[#527088] opacity-50"></div>
         {/* <img 
           src="https://i.postimg.cc/ZKYSYv6H/eng.png" 
           alt="Engenheiro de Segurança" 
