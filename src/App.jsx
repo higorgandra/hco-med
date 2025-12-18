@@ -20,6 +20,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [loadingAuth, setLoadingAuth] = useState(true);
   const userMenuRef = useRef(null);
 
   const ADMIN_UID = "y17dw4ERemT0vJTnlEyDaW4y4a93";
@@ -37,9 +38,16 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoadingAuth(false);
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!loadingAuth && user && currentPage === 'login') {
+      setCurrentPage('dashboard');
+    }
+  }, [user, currentPage, loadingAuth]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -127,6 +135,12 @@ export default function App() {
       return;
     }
 
+    if (id === 'cadastro-ficha') {
+      setCurrentPage('cadastro-ficha');
+      window.scrollTo(0, 0);
+      return;
+    }
+
     const scrollWithOffset = () => {
       const element = document.getElementById(id);
       if (element) {
@@ -210,7 +224,11 @@ export default function App() {
                 {item.icon && <ChevronDown size={14} />}
               </button>
             ))}
-            {user ? (
+            {loadingAuth ? (
+              <div className="w-24 h-10 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-[#0F2C4A] border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : user ? (
               <div className="relative" ref={userMenuRef}>
                 <button 
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -288,7 +306,10 @@ export default function App() {
       </header>
 
       {currentPage === 'cadastro-ficha' && (
-        <FichaCadastral onBack={() => setCurrentPage('home')} />
+        <FichaCadastral onBack={() => {
+          setCurrentPage(user ? 'dashboard' : 'home');
+          window.scrollTo(0, 0);
+        }} />
       )}
 
       {currentPage === 'home' && (

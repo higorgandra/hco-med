@@ -1,10 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, FileText, Calendar, AlertCircle, 
-  Activity, Clock, CheckCircle, BarChart2, Download, Plus, Shield, Lock
+  Activity, Clock, CheckCircle, BarChart2, Download, Plus, Shield, Lock,
+  FilePlus, User as UserIcon, MapPin, Briefcase, Building as BuildingIcon, Search, Database
 } from 'lucide-react';
+import { db } from './firebase';
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
-export default function DashboardAdmin({ user }) {
+export default function DashboardAdmin({ user, onNavigate }) {
+  const [recentRecords, setRecentRecords] = useState([]);
+
+  useEffect(() => {
+    const fetchRecords = async () => {
+      try {
+        const q = query(collection(db, "funcionarios"), orderBy("createdAt", "desc"), limit(5));
+        const querySnapshot = await getDocs(q);
+        const records = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setRecentRecords(records);
+      } catch (error) {
+        console.error("Erro ao buscar registros:", error);
+      }
+    };
+
+    fetchRecords();
+  }, []);
+
   return (
     <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
       <div className="max-w-6xl mx-auto px-4">
@@ -60,12 +83,12 @@ export default function DashboardAdmin({ user }) {
               <h3 className="text-lg font-bold text-[#0F2C4A] mb-4">Acesso Rápido</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label: 'Agendar Exame', icon: Calendar },
-                  { label: 'Novo Funcionário', icon: Plus },
+                  { label: 'Cadastro', icon: FilePlus, onClick: () => onNavigate('cadastro-ficha') },
+                  { label: 'Gerenciar Usuários', icon: Users },
                   { label: 'Baixar ASO', icon: Download },
                   { label: 'Relatórios', icon: BarChart2 },
                 ].map((action, idx) => (
-                  <button key={idx} className="flex flex-col items-center justify-center gap-2 p-4 rounded-lg border border-slate-100 hover:border-[#0F2C4A] hover:bg-slate-50 transition group">
+                  <button key={idx} onClick={action.onClick} className="flex flex-col items-center justify-center gap-2 p-4 rounded-lg border border-slate-100 hover:border-[#0F2C4A] hover:bg-slate-50 transition group">
                     <div className="w-10 h-10 bg-[#0F2C4A]/5 text-[#0F2C4A] rounded-full flex items-center justify-center group-hover:bg-[#0F2C4A] group-hover:text-white transition">
                       <action.icon size={20} />
                     </div>
@@ -75,40 +98,112 @@ export default function DashboardAdmin({ user }) {
               </div>
             </div>
 
-            {/* Upcoming Exams */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h3 className="text-lg font-bold text-[#0F2C4A]">Próximos Exames</h3>
-                <button className="text-sm text-blue-600 hover:underline font-medium">Ver todos</button>
+            {/* Database Management */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-bold text-[#0F2C4A] flex items-center gap-2">
+                  <Database size={20} />
+                  Base de Dados
+                </h3>
+                <div className="relative hidden sm:block">
+                  <input 
+                    type="text" 
+                    placeholder="Buscar registro..." 
+                    className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0F2C4A] w-64"
+                  />
+                  <Search size={16} className="absolute left-3 top-2.5 text-slate-400" />
+                </div>
               </div>
-              <div className="divide-y divide-slate-100">
-                {[
-                  { name: 'Carlos Silva', type: 'Admissional', date: 'Hoje, 14:00', status: 'Confirmado' },
-                  { name: 'Ana Souza', type: 'Periódico', date: 'Amanhã, 09:30', status: 'Pendente' },
-                  { name: 'Roberto Santos', type: 'Demissional', date: '15/10, 10:00', status: 'Confirmado' },
-                  { name: 'Mariana Lima', type: 'Retorno ao Trabalho', date: '16/10, 15:45', status: 'Aguardando' },
-                ].map((exam, idx) => (
-                  <div key={idx} className="p-4 flex items-center justify-between hover:bg-slate-50 transition">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm">
-                        {exam.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="font-bold text-slate-800 text-sm">{exam.name}</p>
-                        <p className="text-xs text-slate-500">{exam.type}</p>
-                      </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border border-slate-100 rounded-xl hover:border-blue-500 hover:shadow-md transition cursor-pointer group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition">
+                      <UserIcon size={24} />
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-slate-700">{exam.date}</p>
-                      <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                        exam.status === 'Confirmado' ? 'bg-green-100 text-green-700' : 
-                        exam.status === 'Pendente' ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-600'
-                      }`}>
-                        {exam.status}
-                      </span>
+                    <div>
+                      <h4 className="font-bold text-slate-800">Funcionários</h4>
+                      <p className="text-xs text-slate-500">Dados pessoais e documentos</p>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                <div className="p-4 border border-slate-100 rounded-xl hover:border-orange-500 hover:shadow-md transition cursor-pointer group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition">
+                      <BuildingIcon size={24} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-800">Empresas & Unidades</h4>
+                      <p className="text-xs text-slate-500">Gestão de locais de trabalho</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-100 rounded-xl hover:border-green-500 hover:shadow-md transition cursor-pointer group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-green-50 text-green-600 rounded-lg flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition">
+                      <Briefcase size={24} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-800">Contratos</h4>
+                      <p className="text-xs text-slate-500">Cargos, funções e admissões</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border border-slate-100 rounded-xl hover:border-purple-500 hover:shadow-md transition cursor-pointer group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+                      <FileText size={24} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-800">Documentação</h4>
+                      <p className="text-xs text-slate-500">ASOs, PGR, PCMSO e Laudos</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Records Table */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 className="text-lg font-bold text-[#0F2C4A]">Últimos Cadastros</h3>
+                <button className="text-sm text-blue-600 hover:underline font-medium">Ver todos</button>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-slate-50 text-slate-600 font-bold">
+                    <tr>
+                      <th className="px-6 py-3">Funcionário</th>
+                      <th className="px-6 py-3">Empresa</th>
+                      <th className="px-6 py-3">Cargo</th>
+                      <th className="px-6 py-3">Data</th>
+                      <th className="px-6 py-3">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {recentRecords.map((record) => (
+                      <tr key={record.id} className="hover:bg-slate-50 transition">
+                        <td className="px-6 py-4 font-medium text-slate-800">{record.nomeFuncionario}</td>
+                        <td className="px-6 py-4 text-slate-600">{record.nomeUnidade || record.razaoSocial || '-'}</td>
+                        <td className="px-6 py-4 text-slate-600">{record.cargo}</td>
+                        <td className="px-6 py-4 text-slate-500">{record.createdAt ? new Date(record.createdAt.seconds * 1000).toLocaleDateString('pt-BR') : '-'}</td>
+                        <td className="px-6 py-4">
+                          <button className="text-blue-600 hover:text-blue-800 font-medium">Editar</button>
+                        </td>
+                      </tr>
+                    ))}
+                    {recentRecords.length === 0 && (
+                      <tr>
+                        <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
+                          Nenhum registro encontrado.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
 

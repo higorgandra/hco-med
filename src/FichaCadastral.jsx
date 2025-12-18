@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { 
   ChevronLeft, FileText, Eraser, Download, User, MapPin, Briefcase, Building, Save 
 } from 'lucide-react';
+import { db } from './firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function FichaCadastral({ onBack }) {
   // Estado inicial com todos os campos mapeados do CSV
@@ -61,6 +63,7 @@ export default function FichaCadastral({ onBack }) {
 
   const [formData, setFormData] = useState(initialFormState);
   const [activeSection, setActiveSection] = useState('pessoais');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,10 +73,22 @@ export default function FichaCadastral({ onBack }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dados salvos:", formData);
-    alert("Cadastro salvo com sucesso! (Simulação)");
+    setIsSubmitting(true);
+    try {
+      await addDoc(collection(db, "funcionarios"), {
+        ...formData,
+        createdAt: new Date()
+      });
+      alert("Cadastro salvo com sucesso!");
+      setFormData(initialFormState);
+    } catch (error) {
+      console.error("Erro ao salvar documento: ", error);
+      alert("Erro ao salvar o cadastro. Tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClear = () => {
@@ -270,10 +285,11 @@ export default function FichaCadastral({ onBack }) {
           <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg md:relative md:bg-transparent md:border-0 md:shadow-none md:p-0 mt-6 flex justify-end z-40">
              <button
               type="submit"
-              className="w-full md:w-auto flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all transform hover:scale-105"
+              disabled={isSubmitting}
+              className={`w-full md:w-auto flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all transform hover:scale-105 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               <Save size={20} />
-              Salvar Cadastro
+              {isSubmitting ? 'Salvando...' : 'Salvar Cadastro'}
             </button>
           </div>
 
