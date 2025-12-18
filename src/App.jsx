@@ -177,7 +177,7 @@ export default function App() {
             </div>
             <div className="hidden md:flex items-center gap-4 font-medium">
               <a href="https://wa.me/5571983156060" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-[#0F2C4A] transition-colors"><Phone size={12} className="text-[#0F2C4A]" /> (71) 98315-6060</a>
-              <span className="flex items-center gap-1"><MapPin size={12} className="text-[#0F2C4A]" /> Av Tancredo Neves, 2539</span>
+              <span className="flex items-center gap-1"><MapPin size={12} className="text-[#0F2C4A]" /> Av. Tancredo Neves, 2539 - Caminho das Árvores Salvador - BA CEP: 41.820-021</span>
             </div>
           </div>
         </div>

@@ -171,31 +171,33 @@ export default function FichaCadastral({ onBack }) {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans pb-20 pt-36">
+    <div className="min-h-screen bg-gray-100 font-sans pb-20 pt-24 md:pt-28">
       {/* Cabeçalho Fixo */}
-      <header className="bg-blue-700 text-white shadow-lg relative">
+      <header className="bg-white text-slate-700 border-b border-slate-200 shadow-sm relative">
         <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <button onClick={onBack} className="p-1 hover:bg-blue-600 rounded-full transition-colors mr-2">
+            <button onClick={onBack} className="p-1 hover:bg-slate-100 rounded-full transition-colors mr-2 text-slate-600">
                 <ChevronLeft size={24} />
             </button>
-            <FileText className="h-6 w-6" />
+            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                <FileText className="h-6 w-6" />
+            </div>
             <div>
-              <h1 className="text-xl font-bold">Ficha Cadastral eSocial</h1>
-              <p className="text-blue-200 text-xs">Preenchimento de Modelo I</p>
+              <h1 className="text-xl font-bold text-slate-800">Ficha Cadastral eSocial</h1>
+              <p className="text-slate-500 text-xs">Preenchimento de Modelo I</p>
             </div>
           </div>
           <div className="flex gap-2">
             <button 
               onClick={handleClear}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-800 hover:bg-blue-900 rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium transition-colors"
             >
               <Eraser size={16} />
               <span className="hidden sm:inline">Limpar</span>
             </button>
             <button 
               onClick={exportCSV}
-              className="flex items-center gap-2 px-4 py-2 bg-white text-blue-700 hover:bg-blue-50 rounded-lg text-sm font-bold transition-colors shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-[#0F2C4A] text-white hover:bg-[#0A1F35] rounded-lg text-sm font-bold transition-colors shadow-sm"
             >
               <Download size={16} />
               <span className="hidden sm:inline">Exportar CSV</span>
