@@ -1,10 +1,10 @@
 import React from 'react';
 import { 
   Users, FileText, Calendar, AlertCircle, 
-  Activity, Clock, CheckCircle, BarChart2, Download, Plus
+  Activity, Clock, CheckCircle, BarChart2, Download, Plus, FilePlus
 } from 'lucide-react';
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, onNavigate }) {
   return (
     <div className="pt-36 pb-20 bg-slate-50 min-h-screen">
       <div className="max-w-6xl mx-auto px-4">
@@ -52,12 +52,12 @@ export default function Dashboard({ user }) {
               <h3 className="text-lg font-bold text-[#0F2C4A] mb-4">Acesso Rápido</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label: 'Agendar Exame', icon: Calendar },
+                  { label: 'Cadastro', icon: FilePlus, onClick: () => onNavigate('cadastro-ficha') },
                   { label: 'Novo Funcionário', icon: Plus },
                   { label: 'Baixar ASO', icon: Download },
                   { label: 'Relatórios', icon: BarChart2 },
                 ].map((action, idx) => (
-                  <button key={idx} className="flex flex-col items-center justify-center gap-2 p-4 rounded-lg border border-slate-100 hover:border-[#0F2C4A] hover:bg-slate-50 transition group">
+                  <button key={idx} onClick={action.onClick} className="flex flex-col items-center justify-center gap-2 p-4 rounded-lg border border-slate-100 hover:border-[#0F2C4A] hover:bg-slate-50 transition group">
                     <div className="w-10 h-10 bg-[#0F2C4A]/5 text-[#0F2C4A] rounded-full flex items-center justify-center group-hover:bg-[#0F2C4A] group-hover:text-white transition">
                       <action.icon size={20} />
                     </div>
