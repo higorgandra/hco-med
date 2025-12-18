@@ -1076,7 +1076,29 @@ export default function Home({ onNavigate }) {
                 </div>
               </div>
               
-              <div className="mt-16 flex justify-center">
+              {/* --- ENDEREÇO --- */}
+              <div className="max-w-3xl mx-auto mt-16">
+                <div className="bg-white border border-slate-100 rounded-2xl p-8 flex flex-col sm:flex-row items-start gap-6 shadow-sm hover:shadow-lg transition-shadow duration-300">
+                  <div className="bg-[#0F2C4A]/10 text-[#0F2C4A] p-4 rounded-xl">
+                    <MapPin size={28} />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-[#0F2C4A] mb-2">Nossa Localização</h4>
+                    <p className="text-slate-600 text-base leading-relaxed">Av. Tancredo Neves, 2539 - Caminho das Árvores</p>
+                    <p className="text-slate-600 text-base leading-relaxed">Salvador - BA, CEP: 41.820-021</p>
+                    <a 
+                      href="https://www.google.com/maps/search/?api=1&query=Av+Tancredo+Neves,+2539,+Caminho+das+Árvores,+Salvador,+BA"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:underline mt-4"
+                    >
+                      Ver no mapa <ArrowRight size={16} />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-12 flex justify-center">
                 <button onClick={() => onNavigate('contato')} className="bg-[#0F2C4A] text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-[#0A1F35] transition shadow-lg hover:shadow-xl flex items-center gap-3">
                   Fale Conosco <ArrowRight size={20} />
                 </button>
