@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, X, Phone, MapPin, ChevronDown, FileText, ChevronRight, User, LogOut, LayoutDashboard
 } from 'lucide-react';
@@ -13,11 +13,16 @@ import Footer from './Footer';
 import Home from './Home';
 import Login from './Login';
 import Dashboard from './Dashboard';
+import DashboardAdmin from './DashboardAdmin';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
+
+  const ADMIN_UID = "y17dw4ERemT0vJTnlEyDaW4y4a93";
 
   const menuItems = [
     { label: 'Início', id: 'inicio' },
@@ -35,6 +40,18 @@ export default function App() {
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [userMenuRef]);
 
   const handleLoginSuccess = (loggedInUser) => {
     setUser(loggedInUser);
@@ -194,25 +211,30 @@ export default function App() {
               </button>
             ))}
             {user ? (
-              <div className="relative group">
-                <button className="flex items-center gap-2 p-1 rounded-full border-2 border-transparent group-hover:border-slate-200 transition-colors">
+              <div className="relative" ref={userMenuRef}>
+                <button 
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className={`flex items-center gap-2 p-1 rounded-full border-2 transition-colors ${isUserMenuOpen ? 'border-slate-200' : 'border-transparent'}`}
+                >
                   <img src={user.photoURL} alt={user.displayName} className="w-8 h-8 rounded-full" />
-                  <ChevronDown size={16} />
+                  <ChevronDown size={16} className={`transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
-                <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-slate-100 opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible z-10">
-                  <div className="p-2">
-                    <div className="px-3 py-2 border-b border-slate-100">
-                      <p className="text-sm font-bold text-slate-800 truncate">{user.displayName}</p>
-                      <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                {isUserMenuOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-slate-100 z-10 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="p-2">
+                      <div className="px-3 py-2 border-b border-slate-100">
+                        <p className="text-sm font-bold text-slate-800 truncate">{user.displayName}</p>
+                        <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                      </div>
+                      <button onClick={() => { scrollToSection('dashboard'); setIsUserMenuOpen(false); }} className="w-full text-left flex items-center gap-2 px-3 py-2 mt-1 text-sm text-slate-600 hover:bg-slate-50 rounded-md font-semibold">
+                        <LayoutDashboard size={16} /> Dashboard
+                      </button>
+                      <button onClick={() => { handleLogout(); setIsUserMenuOpen(false); }} className="w-full text-left flex items-center gap-2 px-3 py-2 mt-1 text-sm text-red-600 hover:bg-red-50 rounded-md font-semibold">
+                        <LogOut size={16} /> Sair
+                      </button>
                     </div>
-                    <button onClick={() => scrollToSection('dashboard')} className="w-full text-left flex items-center gap-2 px-3 py-2 mt-1 text-sm text-slate-600 hover:bg-slate-50 rounded-md font-semibold">
-                      <LayoutDashboard size={16} /> Dashboard
-                    </button>
-                    <button onClick={handleLogout} className="w-full text-left flex items-center gap-2 px-3 py-2 mt-1 text-sm text-red-600 hover:bg-red-50 rounded-md font-semibold">
-                      <LogOut size={16} /> Sair
-                    </button>
                   </div>
-                </div>
+                )}
               </div>
             ) : (
               <button onClick={() => scrollToSection('login')} className="bg-[#0F2C4A] text-white px-5 py-2 rounded-full hover:bg-[#0A1F35] transition font-bold shadow-lg shadow-slate-300 flex items-center gap-2">
@@ -275,7 +297,11 @@ export default function App() {
 
       {/* --- PÁGINA DE DASHBOARD --- */}
       {currentPage === 'dashboard' && user && (
-        <Dashboard user={user} onNavigate={scrollToSection} />
+        user.uid === ADMIN_UID ? (
+          <DashboardAdmin user={user} onNavigate={scrollToSection} />
+        ) : (
+          <Dashboard user={user} onNavigate={scrollToSection} />
+        )
       )}
 
       {/* --- PÁGINA DE LOGIN --- */}
