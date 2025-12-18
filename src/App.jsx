@@ -23,7 +23,10 @@ export default function App() {
   const [loadingAuth, setLoadingAuth] = useState(true);
   const userMenuRef = useRef(null);
 
-  const ADMIN_UID = "y17dw4ERemT0vJTnlEyDaW4y4a93";
+  const ADMIN_UIDS = [
+    "y17dw4ERemT0vJTnlEyDaW4y4a93",
+    "c9Y86COT6PdEiqBxenHkNY6268y2"
+  ];
 
   const menuItems = [
     { label: 'Início', id: 'inicio' },
@@ -318,7 +321,7 @@ export default function App() {
 
       {/* --- PÁGINA DE DASHBOARD --- */}
       {currentPage === 'dashboard' && user && (
-        user.uid === ADMIN_UID ? (
+        ADMIN_UIDS.includes(user.uid) ? (
           <DashboardAdmin user={user} onNavigate={scrollToSection} />
         ) : (
           <Dashboard user={user} onNavigate={scrollToSection} />
