@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Menu, X, Phone, MapPin, ChevronDown, FileText, ChevronRight, User, LogOut, LayoutDashboard
+  Menu, X, Phone, MapPin, ChevronDown, FileText, ChevronRight
 } from 'lucide-react';
-import { auth } from './firebase';
-import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import FichaCadastral from './FichaCadastral';
 import PrivacyPolicy from './PrivacyPolicy';
@@ -11,22 +9,13 @@ import Guidelines from './Guidelines';
 import Sitemap from './Sitemap';
 import Footer from './Footer';
 import Home from './Home';
-import Login from './Login';
-import Dashboard from './Dashboard';
-import DashboardAdmin from './DashboardAdmin';
+import GestaoHCO from './GestaoHCO';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState('home');
-  const [user, setUser] = useState(null);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [loadingAuth, setLoadingAuth] = useState(true);
-  const userMenuRef = useRef(null);
-
-  const ADMIN_UIDS = [
-    "y17dw4ERemT0vJTnlEyDaW4y4a93",
-    "c9Y86COT6PdEiqBxenHkNY6268y2"
-  ];
+  const [currentPage, setCurrentPage] = useState(() => {
+    return window.location.pathname === '/gestaohco' ? 'gestaohco' : 'home';
+  });
 
   const menuItems = [
     { label: 'Início', id: 'inicio' },
@@ -37,45 +26,6 @@ export default function App() {
     { label: 'Cadastro', id: 'cadastro' },
     { label: 'Contato', id: 'contato' }
   ];
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoadingAuth(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!loadingAuth && user && currentPage === 'login') {
-      setCurrentPage('dashboard');
-    }
-  }, [user, currentPage, loadingAuth]);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
-        setIsUserMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [userMenuRef]);
-
-  const handleLoginSuccess = (loggedInUser) => {
-    setUser(loggedInUser);
-    setCurrentPage('dashboard');
-    window.scrollTo(0, 0);
-  };
-
-  const handleLogout = () => {
-    signOut(auth).then(() => {
-      setCurrentPage('home');
-      window.scrollTo(0, 0);
-    });
-  };
 
   useEffect(() => {
     const linkFont = document.createElement('link');
@@ -121,23 +71,6 @@ export default function App() {
       return;
     }
 
-    if (id === 'dashboard') {
-      if (user) {
-        setCurrentPage('dashboard');
-        window.scrollTo(0, 0);
-      } else {
-        setCurrentPage('login');
-        window.scrollTo(0, 0);
-      }
-      return;
-    }
-
-    if (id === 'login') {
-      setCurrentPage('login');
-      window.scrollTo(0, 0);
-      return;
-    }
-
     if (id === 'cadastro-ficha') {
       setCurrentPage('cadastro-ficha');
       window.scrollTo(0, 0);
@@ -167,6 +100,10 @@ export default function App() {
       scrollWithOffset();
     }
   };
+
+  if (currentPage === 'gestaohco') {
+    return <GestaoHCO />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-700" style={{ fontFamily: '"Inter", sans-serif' }}>
@@ -227,41 +164,9 @@ export default function App() {
                 {item.icon && <ChevronDown size={14} />}
               </button>
             ))}
-            {loadingAuth ? (
-              <div className="w-24 h-10 flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-[#0F2C4A] border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            ) : user ? (
-              <div className="relative" ref={userMenuRef}>
-                <button 
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className={`flex items-center gap-2 p-1 rounded-full border-2 transition-colors ${isUserMenuOpen ? 'border-slate-200' : 'border-transparent'}`}
-                >
-                  <img src={user.photoURL} alt={user.displayName} className="w-8 h-8 rounded-full" />
-                  <ChevronDown size={16} className={`transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                </button>
-                {isUserMenuOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-slate-100 z-10 animate-in fade-in zoom-in-95 duration-200">
-                    <div className="p-2">
-                      <div className="px-3 py-2 border-b border-slate-100">
-                        <p className="text-sm font-bold text-slate-800 truncate">{user.displayName}</p>
-                        <p className="text-xs text-slate-500 truncate">{user.email}</p>
-                      </div>
-                      <button onClick={() => { scrollToSection('dashboard'); setIsUserMenuOpen(false); }} className="w-full text-left flex items-center gap-2 px-3 py-2 mt-1 text-sm text-slate-600 hover:bg-slate-50 rounded-md font-semibold">
-                        <LayoutDashboard size={16} /> Dashboard
-                      </button>
-                      <button onClick={() => { handleLogout(); setIsUserMenuOpen(false); }} className="w-full text-left flex items-center gap-2 px-3 py-2 mt-1 text-sm text-red-600 hover:bg-red-50 rounded-md font-semibold">
-                        <LogOut size={16} /> Sair
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <button onClick={() => scrollToSection('login')} className="bg-[#0F2C4A] text-white px-5 py-2 rounded-full hover:bg-[#0A1F35] transition font-bold shadow-lg shadow-slate-300 flex items-center gap-2">
-                <User size={16} /> Login
-              </button>
-            )}
+            <a href="https://sistema.soc.com.br/WebSoc/" target="_blank" rel="noopener noreferrer" className="bg-[#0F2C4A] text-white px-5 py-2 rounded-full hover:bg-[#0A1F35] transition font-bold shadow-lg shadow-slate-300 flex items-center gap-2">
+              <FileText size={16} /> Exames
+            </a>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -310,27 +215,13 @@ export default function App() {
 
       {currentPage === 'cadastro-ficha' && (
         <FichaCadastral onBack={() => {
-          setCurrentPage(user ? 'dashboard' : 'home');
+          setCurrentPage('home');
           window.scrollTo(0, 0);
         }} />
       )}
 
       {currentPage === 'home' && (
         <Home onNavigate={scrollToSection} />
-      )}
-
-      {/* --- PÁGINA DE DASHBOARD --- */}
-      {currentPage === 'dashboard' && user && (
-        ADMIN_UIDS.includes(user.uid) ? (
-          <DashboardAdmin user={user} onNavigate={scrollToSection} />
-        ) : (
-          <Dashboard user={user} onNavigate={scrollToSection} />
-        )
-      )}
-
-      {/* --- PÁGINA DE LOGIN --- */}
-      {currentPage === 'login' && !user && (
-        <Login onLoginSuccess={handleLoginSuccess} />
       )}
 
       {/* --- PÁGINA DE POLÍTICA DE PRIVACIDADE --- */}
