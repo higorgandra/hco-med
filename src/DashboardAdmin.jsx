@@ -58,7 +58,7 @@ export default function DashboardAdmin({ user, onNavigate }) {
   };
 
   return (
-    <div className="flex h-screen bg-slate-100 font-sans pt-20 lg:pt-0">
+    <div className="flex h-screen bg-slate-100 font-sans">
       {/* Sidebar */}
       <aside 
         className={`fixed inset-y-0 left-0 z-50 bg-[#0F2C4A] text-white transition-all duration-300 ease-in-out lg:static ${
