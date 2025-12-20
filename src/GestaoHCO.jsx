@@ -56,7 +56,7 @@ export default function GestaoHCO() {
 
   // Se não estiver logado, renderiza a tela de login
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0F2C4A] sm:p-4 font-sans">
+    <div className="h-screen overflow-hidden sm:h-auto sm:min-h-screen sm:overflow-visible flex items-center justify-center bg-[#0F2C4A] sm:p-4 font-sans">
       <div className="bg-white w-full min-h-screen sm:min-h-0 sm:rounded-2xl sm:shadow-2xl sm:max-w-md overflow-hidden flex flex-col justify-center sm:block">
         <div className="p-8 bg-slate-50 border-b border-slate-100 text-center">
           <div className="flex items-center justify-center gap-2 cursor-pointer mb-6" onClick={() => window.location.href = '/'}>

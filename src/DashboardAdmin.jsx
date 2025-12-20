@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   LayoutDashboard, FileText, DollarSign, CreditCard, ArrowRightLeft, 
   Database, BarChart, Settings, LogOut, Menu, Search, Bell, User, 
@@ -10,9 +10,10 @@ import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
 export default function DashboardAdmin({ user, onNavigate }) {
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth >= 1024);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [recentRecords, setRecentRecords] = useState([]);
+  const userMenuRef = useRef(null);
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -31,6 +32,18 @@ export default function DashboardAdmin({ user, onNavigate }) {
 
     fetchRecords();
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [userMenuRef]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -65,8 +78,11 @@ export default function DashboardAdmin({ user, onNavigate }) {
           isSidebarOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:w-0 lg:overflow-hidden'
         }`}
       >
-        <div className="flex items-center justify-center h-20 border-b border-slate-700 bg-[#0A1F35]">
-          <h2 className="text-xl font-bold tracking-wider">HCO Financeiro</h2>
+        <div className="flex items-center justify-between px-4 h-20 border-b border-slate-700 bg-[#0A1F35] overflow-hidden">
+          <h2 className="text-xl font-bold tracking-wider whitespace-nowrap">HCO Financeiro</h2>
+          <button onClick={toggleSidebar} className="p-2 text-slate-300 hover:bg-white/10 rounded-lg" title="Recolher Menu">
+            <Menu size={20} />
+          </button>
         </div>
         
         <nav className="mt-6 px-4 space-y-2">
@@ -79,12 +95,6 @@ export default function DashboardAdmin({ user, onNavigate }) {
           <NavItem id="relatorios" icon={BarChart} label="Relatórios" active={activeSection === 'relatorios'} onClick={() => setActiveSection('relatorios')} />
           <NavItem id="configuracoes" icon={Settings} label="Configurações" active={activeSection === 'configuracoes'} onClick={() => setActiveSection('configuracoes')} />
         </nav>
-
-        <div className="absolute bottom-0 w-full p-4 border-t border-slate-700 bg-[#0A1F35]">
-          <button onClick={toggleSidebar} className="flex items-center justify-center w-full gap-2 px-4 py-2 text-sm font-medium text-white bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors" title="Recolher Menu">
-            <Menu size={18} />
-          </button>
-        </div>
       </aside>
 
       {/* Overlay for mobile sidebar */}
@@ -122,7 +132,7 @@ export default function DashboardAdmin({ user, onNavigate }) {
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             
-            <div className="relative">
+            <div className="relative" ref={userMenuRef}>
               <button 
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center gap-3 pl-4 border-l border-slate-200 hover:bg-slate-50 transition-colors p-2 rounded-lg"
@@ -161,14 +171,14 @@ export default function DashboardAdmin({ user, onNavigate }) {
 const NavItem = ({ icon: Icon, label, active, onClick }) => (
   <button 
     onClick={onClick}
-    className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+    className={`flex items-center w-full gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors overflow-hidden ${
       active 
         ? 'bg-white/10 text-white shadow-sm' 
         : 'text-slate-400 hover:bg-white/5 hover:text-white'
     }`}
   >
     <Icon size={20} />
-    {label}
+    <span className="whitespace-nowrap">{label}</span>
   </button>
 );
 
