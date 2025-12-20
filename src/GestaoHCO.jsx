@@ -10,24 +10,9 @@ export default function GestaoHCO() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Lista de IDs de usuários permitidos (Administradores)
-  const ADMIN_UIDS = [
-    "y17dw4ERemT0vJTnlEyDaW4y4a93",
-    "c9Y86COT6PdEiqBxenHkNY6268y2"
-  ];
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        if (ADMIN_UIDS.includes(currentUser.uid)) {
-          setUser(currentUser);
-        } else {
-          await signOut(auth);
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
       setLoading(false);
     });
     return () => unsubscribe();
@@ -37,11 +22,7 @@ export default function GestaoHCO() {
     setError('');
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      if (!ADMIN_UIDS.includes(result.user.uid)) {
-        await signOut(auth);
-        setError('Acesso negado. Apenas administradores podem acessar este painel.');
-      }
+      await signInWithPopup(auth, provider);
     } catch (err) {
       console.error("Erro login:", err);
       setError('Erro ao fazer login com Google. Tente novamente.');
@@ -75,11 +56,37 @@ export default function GestaoHCO() {
 
   // Se não estiver logado, renderiza a tela de login
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0F2C4A] p-4 font-sans">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-[#0F2C4A] sm:p-4 font-sans">
+      <div className="bg-white w-full min-h-screen sm:min-h-0 sm:rounded-2xl sm:shadow-2xl sm:max-w-md overflow-hidden flex flex-col justify-center sm:block">
         <div className="p-8 bg-slate-50 border-b border-slate-100 text-center">
-          <div className="w-20 h-20 bg-white rounded-xl shadow-sm mx-auto mb-4 flex items-center justify-center p-2">
-             <img src="https://www.genspark.ai/api/files/s/9C1YzsKA" alt="HCO" className="w-full h-full object-contain" />
+          <div className="flex items-center justify-center gap-2 cursor-pointer mb-6" onClick={() => window.location.href = '/'}>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="5473 6038 504 506" 
+              className="h-12 w-auto"
+              style={{ shapeRendering: 'geometricPrecision', textRendering: 'geometricPrecision', imageRendering: 'optimizeQuality', fillRule: 'evenodd', clipRule: 'evenodd' }}
+            >
+              <defs>
+                <linearGradient id="crossGradient" gradientUnits="userSpaceOnUse" x1="5548" y1="6290.5" x2="5903" y2="6290.5" gradientTransform="rotate(125, 5725.5, 6290.5)">
+                  <stop offset="0%" stopColor="#D1D5DB" />
+                  <stop offset="50%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#D1D5DB" />
+                </linearGradient>
+              </defs>
+              <rect fill="#0F2C4A" x="5473" y="6038" width="504" height="506" rx="59" ry="59"/>
+              <polygon fill="url(#crossGradient)" points="5718,6123 5663,6123 5663,6228 5548,6228 5548,6283 5663,6283 5718,6283 5718,6228 "/>
+              <polygon fill="url(#crossGradient)" points="5733,6123 5788,6123 5788,6228 5903,6228 5903,6283 5788,6283 5733,6283 5733,6228 "/>
+              <polygon fill="url(#crossGradient)" points="5733,6458 5788,6458 5788,6353 5903,6353 5903,6298 5788,6298 5733,6298 5733,6353 "/>
+              <polygon fill="url(#crossGradient)" points="5718,6458 5663,6458 5663,6353 5548,6353 5548,6298 5663,6298 5718,6298 5718,6353 "/>
+            </svg>
+            <div className="flex items-center gap-2">
+              <h1 className="text-6xl font-black text-[#0F2C4A] leading-none" style={{ WebkitTextStroke: '1.5px #0F2C4A' }}>HCO</h1>
+              <div className="flex flex-col text-[13px] font-bold text-[#A6A6A6] leading-tight tracking-wider text-left">
+                <span>MEDICINA</span>
+                <span>E SEGURANÇA</span>
+                <span>DO TRABALHO</span>
+              </div>
+            </div>
           </div>
           <h1 className="text-2xl font-bold text-[#0F2C4A]">HCO Financeiro</h1>
           <p className="text-slate-500 text-sm">Sistema de Gestão Financeira</p>
