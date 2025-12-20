@@ -221,7 +221,7 @@ const KPICard = ({ icon: Icon, label, value, trend, colorClass, bgClass }) => (
 // Sections
 const DashboardSection = ({ recentRecords }) => (
   <div className="space-y-8">
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="flex flex-col items-start gap-4">
       <h1 className="text-2xl font-bold text-[#0F2C4A] flex items-center gap-2">
         <LayoutDashboard className="text-[#0F2C4A]" /> Dashboard Financeiro
       </h1>
@@ -307,13 +307,15 @@ const DashboardSection = ({ recentRecords }) => (
 
 const PropostasSection = () => (
   <div className="space-y-6">
-    <div className="flex justify-between items-center">
+    <div className="flex flex-col items-start gap-4">
       <h1 className="text-2xl font-bold text-[#0F2C4A] flex items-center gap-2">
         <FileText /> Propostas Comerciais
       </h1>
-      <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
-        <Plus size={16} /> Nova Proposta
-      </button>
+      <div>
+        <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
+          <Plus size={16} /> Nova Proposta
+        </button>
+      </div>
     </div>
     
     <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-wrap gap-4 items-end">
@@ -363,13 +365,15 @@ const PropostasSection = () => (
 
 const ReceberSection = () => (
   <div className="space-y-6">
-    <div className="flex justify-between items-center">
+    <div className="flex flex-col items-start gap-4">
       <h1 className="text-2xl font-bold text-[#0F2C4A] flex items-center gap-2">
         <DollarSign /> Contas a Receber
       </h1>
-      <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
-        <Plus size={16} /> Novo Recebimento
-      </button>
+      <div>
+        <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
+          <Plus size={16} /> Novo Recebimento
+        </button>
+      </div>
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -416,7 +420,7 @@ const ReceberSection = () => (
 
 const PagarSection = () => (
   <div className="space-y-6">
-    <div className="flex justify-between items-center">
+    <div className="flex flex-col items-start gap-4">
       <h1 className="text-2xl font-bold text-[#0F2C4A] flex items-center gap-2">
         <CreditCard /> Contas a Pagar
       </h1>
@@ -474,7 +478,7 @@ const PagarSection = () => (
 
 const FluxoSection = () => (
   <div className="space-y-6">
-    <div className="flex justify-between items-center">
+    <div className="flex flex-col items-start gap-4">
       <h1 className="text-2xl font-bold text-[#0F2C4A] flex items-center gap-2">
         <ArrowRightLeft /> Fluxo de Caixa
       </h1>
@@ -593,11 +597,13 @@ const CadastrosSection = () => {
 
       {activeTab === 'clientes' && (
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col items-start gap-4">
             <h2 className="text-lg font-bold text-slate-800">Clientes</h2>
-            <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
-              <Plus size={16} /> Novo Cliente
-            </button>
+            <div>
+              <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
+                <Plus size={16} /> Novo Cliente
+              </button>
+            </div>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
             <table className="w-full text-sm text-left">
@@ -623,11 +629,13 @@ const CadastrosSection = () => {
 
       {activeTab === 'fornecedores' && (
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col items-start gap-4">
             <h2 className="text-lg font-bold text-slate-800">Fornecedores</h2>
-            <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
-              <Plus size={16} /> Novo Fornecedor
-            </button>
+            <div>
+              <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
+                <Plus size={16} /> Novo Fornecedor
+              </button>
+            </div>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
             <table className="w-full text-sm text-left">
@@ -653,11 +661,13 @@ const CadastrosSection = () => {
 
       {activeTab === 'servicos' && (
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col items-start gap-4">
             <h2 className="text-lg font-bold text-slate-800">Tabela de Serviços e Preços</h2>
-            <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
-              <Plus size={16} /> Novo Serviço
-            </button>
+            <div>
+              <button className="px-4 py-2 bg-[#0F2C4A] text-white rounded-lg text-sm font-medium hover:bg-[#0A1F35] flex items-center gap-2">
+                <Plus size={16} /> Novo Serviço
+              </button>
+            </div>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
             <table className="w-full text-sm text-left">
@@ -781,7 +791,7 @@ const ConfiguracoesSection = () => (
           </h3>
           <p className="text-sm text-red-600 font-bold mb-2">⚠️ ATENÇÃO: Esta ação é IRREVERSÍVEL!</p>
           <p className="text-sm text-slate-500 mb-4">Apaga TODOS os dados do sistema (propostas, contas, histórico, clientes).</p>
-          <button className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 flex items-center gap-2">
+          <button disabled className="px-4 py-2 bg-gray-400 text-white rounded-lg text-sm font-medium cursor-not-allowed flex items-center gap-2">
             <AlertCircle size={16} /> Zerar Todos os Dados
           </button>
         </div>
