@@ -1317,8 +1317,8 @@ export default function Home({ onNavigate }) {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-800 text-lg mb-1">Endereço</h4>
-                    <p className="text-slate-600">Av. Porto dos Mastros, 162</p>
-                    <p className="text-slate-600">Salvador - BA, 40421-520</p>
+                    <p className="text-slate-600">Av. Tancredo Neves, 2539 - Caminho das Árvores</p>
+                    <p className="text-slate-600">Salvador - BA CEP: 41.820-021</p>
                   </div>
                 </div>
 
