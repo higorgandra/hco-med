@@ -23,6 +23,7 @@ export default function App() {
     { label: 'Serviços', id: 'servicos' },
     { label: 'Gestão SST', id: 'gestao' },
     { label: 'eSocial', id: 'socialegestaosst' },
+    { label: 'Orientações', id: 'orientacoes' },
     { label: 'Cadastro', id: 'cadastro' },
     { label: 'Contato', id: 'contato' }
   ];
