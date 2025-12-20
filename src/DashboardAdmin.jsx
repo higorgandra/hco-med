@@ -61,6 +61,13 @@ export default function DashboardAdmin({ user, onNavigate }) {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   const renderSection = () => {
     switch (activeSection) {
       case 'dashboard':
@@ -100,14 +107,14 @@ export default function DashboardAdmin({ user, onNavigate }) {
         </div>
         
         <nav className="mt-6 px-4 space-y-2">
-          <NavItem id="dashboard" icon={LayoutDashboard} label="Dashboard" active={activeSection === 'dashboard'} onClick={() => setActiveSection('dashboard')} />
-          <NavItem id="propostas" icon={FileText} label="Propostas" active={activeSection === 'propostas'} onClick={() => setActiveSection('propostas')} />
-          <NavItem id="receber" icon={DollarSign} label="Contas a Receber" active={activeSection === 'receber'} onClick={() => setActiveSection('receber')} />
-          <NavItem id="pagar" icon={CreditCard} label="Contas a Pagar" active={activeSection === 'pagar'} onClick={() => setActiveSection('pagar')} />
-          <NavItem id="fluxo" icon={ArrowRightLeft} label="Fluxo de Caixa" active={activeSection === 'fluxo'} onClick={() => setActiveSection('fluxo')} />
-          <NavItem id="cadastros" icon={Database} label="Cadastros" active={activeSection === 'cadastros'} onClick={() => setActiveSection('cadastros')} />
-          <NavItem id="relatorios" icon={BarChart} label="Relatórios" active={activeSection === 'relatorios'} onClick={() => setActiveSection('relatorios')} />
-          <NavItem id="configuracoes" icon={Settings} label="Configurações" active={activeSection === 'configuracoes'} onClick={() => setActiveSection('configuracoes')} />
+          <NavItem id="dashboard" icon={LayoutDashboard} label="Dashboard" active={activeSection === 'dashboard'} onClick={() => handleSectionChange('dashboard')} />
+          <NavItem id="propostas" icon={FileText} label="Propostas" active={activeSection === 'propostas'} onClick={() => handleSectionChange('propostas')} />
+          <NavItem id="receber" icon={DollarSign} label="Contas a Receber" active={activeSection === 'receber'} onClick={() => handleSectionChange('receber')} />
+          <NavItem id="pagar" icon={CreditCard} label="Contas a Pagar" active={activeSection === 'pagar'} onClick={() => handleSectionChange('pagar')} />
+          <NavItem id="fluxo" icon={ArrowRightLeft} label="Fluxo de Caixa" active={activeSection === 'fluxo'} onClick={() => handleSectionChange('fluxo')} />
+          <NavItem id="cadastros" icon={Database} label="Cadastros" active={activeSection === 'cadastros'} onClick={() => handleSectionChange('cadastros')} />
+          <NavItem id="relatorios" icon={BarChart} label="Relatórios" active={activeSection === 'relatorios'} onClick={() => handleSectionChange('relatorios')} />
+          <NavItem id="configuracoes" icon={Settings} label="Configurações" active={activeSection === 'configuracoes'} onClick={() => handleSectionChange('configuracoes')} />
         </nav>
       </aside>
 
@@ -173,7 +180,7 @@ export default function DashboardAdmin({ user, onNavigate }) {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 lg:p-8">
+        <div className={`flex-1 p-6 lg:p-8 ${isSidebarOpen ? 'overflow-hidden lg:overflow-y-auto' : 'overflow-y-auto'}`}>
           {renderSection()}
         </div>
       </main>
