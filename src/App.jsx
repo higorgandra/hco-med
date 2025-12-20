@@ -19,9 +19,9 @@ export default function App() {
 
   const menuItems = [
     { label: 'Início', id: 'inicio' },
-    { label: 'A Clínica', id: 'clinica' },
+    { label: 'Clínica', id: 'clinica' },
     { label: 'Serviços', id: 'servicos' },
-    { label: 'Gestão SST', id: 'gestao' },
+    { label: 'Gestão', id: 'gestao' },
     { label: 'eSocial', id: 'socialegestaosst' },
     { label: 'Orientações', id: 'orientacoes' },
     { label: 'Cadastro', id: 'cadastro' },
