@@ -45,6 +45,20 @@ export default function DashboardAdmin({ user, onNavigate }) {
     };
   }, [userMenuRef]);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        if (isUserMenuOpen) {
+          setIsUserMenuOpen(false);
+        } else if (isSidebarOpen) {
+          setIsSidebarOpen(false);
+        }
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isUserMenuOpen, isSidebarOpen]);
+
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const renderSection = () => {
