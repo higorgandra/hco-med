@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Instagram, Linkedin, Youtube, Copyright } from 'lucide-react';
+import { Instagram, Linkedin, Copyright, ExternalLink } from 'lucide-react';
 
 export default function Footer({ onNavigate }) {
   return (
@@ -35,12 +35,11 @@ export default function Footer({ onNavigate }) {
           
           {/* Section 2: Serviços */}
           <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Serviços</h4>
+            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Informações</h4>
             <ul className="space-y-2 text-sm">
-            <li><button onClick={() => onNavigate('orientacoes')} className="hover:text-white transition text-left">Dicas e Orientações</button></li>
-              <li><button onClick={() => onNavigate('socialegestaosst')} className="hover:text-white transition text-left">eSocial e Gestão SST</button></li>
-              <li><button onClick={() => onNavigate('gestao')} className="hover:text-white transition text-left">Gestão de Saúde</button></li>
-            <li><button onClick={() => onNavigate('cadastro')} className="hover:text-white transition text-left">Cadastro</button></li>
+              <li><button onClick={() => onNavigate('faq')} className="hover:text-white transition text-left">Faq</button></li>
+              <li><button onClick={() => onNavigate('diretrizes')} className="hover:text-white transition text-left">Diretrizes</button></li>
+              <li><button onClick={() => onNavigate('sitemap')} className="hover:text-white transition text-left">Mapa do Site</button></li>
             </ul>
           </div>
           
@@ -48,10 +47,10 @@ export default function Footer({ onNavigate }) {
           <div>
              <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Links Úteis</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="https://www.gov.br/pt-br/categorias/trabalho-e-previdencia" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Ministério do Trabalho</a></li>
-              <li><a href="https://www.gov.br/esocial" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">eSocial</a></li>
-              <li><a href="https://www.cfm.org.br" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Conselho Federal de Medicina</a></li>
-              <li><a href="https://www.anamt.org.br" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">ANAMT</a></li>
+              <li><a href="https://www.gov.br/pt-br/categorias/trabalho-e-previdencia" target="_blank" rel="noopener noreferrer" className="hover:text-white transition flex items-center gap-2">Ministério do Trabalho <ExternalLink size={14} /></a></li>
+              <li><a href="https://www.gov.br/esocial" target="_blank" rel="noopener noreferrer" className="hover:text-white transition flex items-center gap-2">eSocial <ExternalLink size={14} /></a></li>
+              <li><a href="https://www.cfm.org.br" target="_blank" rel="noopener noreferrer" className="hover:text-white transition flex items-center gap-2">Conselho Federal de Medicina <ExternalLink size={14} /></a></li>
+              <li><a href="https://www.anamt.org.br" target="_blank" rel="noopener noreferrer" className="hover:text-white transition flex items-center gap-2">ANAMT <ExternalLink size={14} /></a></li>
             </ul>
           </div>
 
@@ -59,10 +58,8 @@ export default function Footer({ onNavigate }) {
           <div>
             <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Redes Sociais</h4>
             <div className="flex gap-4">
-              <a href="#" aria-label="Facebook" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Facebook size={20} /></a>
-              <a href="https://www.instagram.com/clinicahco" aria-label="Instagram" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Instagram size={20} /></a>
+              <a href="https://www.instagram.com/clinicahco" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Instagram size={20} /></a>
               <a href="https://www.linkedin.com/in/clinica-hco-medicina-e-seguran%C3%A7a-do-trabalho-19a958399/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Linkedin size={20} /></a>
-              <a href="#" aria-label="YouTube" className="w-10 h-10 bg-[#0A1F35] rounded-full flex items-center justify-center hover:bg-white hover:text-[#0F2C4A] transition duration-300"><Youtube size={20} /></a>
             </div>
           </div>
         </div>
@@ -74,15 +71,11 @@ export default function Footer({ onNavigate }) {
               <p className="text-slate-500 mt-1">Desenvolvido com foco em gestão e saúde ocupacional.</p>
             </div>
             <div className="flex flex-wrap justify-center items-center gap-2 text-sm">
-            <a href="#" className="hover:text-white transition">Termos de Uso</a>
-            <span className="text-slate-600">|</span>
-            <button onClick={() => onNavigate('politicadeprivacidade')} className="hover:text-white transition">Política de Privacidade</button>
-            <span className="text-slate-600">|</span>
-            <a href="#" className="hover:text-white transition">LGPD</a>
-            <span className="text-slate-600">|</span>
-            <button onClick={() => onNavigate('diretrizes')} className="hover:text-white transition">Diretrizes</button>
-            <span className="text-slate-600">|</span>
-            <button onClick={() => onNavigate('sitemap')} className="hover:text-white transition">Mapa do Site</button>
+              <a href="#" className="hover:text-white transition">Termos de Uso</a>
+              <span className="text-slate-600">|</span>
+              <button onClick={() => onNavigate('politicadeprivacidade')} className="hover:text-white transition">Política de Privacidade</button>
+              <span className="text-slate-600">|</span>
+              <a href="#" className="hover:text-white transition">LGPD</a>
             </div>
           </div>
           

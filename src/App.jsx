@@ -10,6 +10,15 @@ import Sitemap from './Sitemap';
 import Footer from './Footer';
 import Home from './Home';
 import GestaoHCO from './GestaoHCO';
+import Clinica from './Clinica';
+import Servicos from './Servicos';
+import Gestao from './Gestao';
+import Esocial from './Esocial';
+import Orientacoes from './Orientacoes';
+import Contato from './Contato';
+import Cadastro from './Cadastro';
+import Faq from './Faq';
+import Normativas from './Normativas';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,8 +31,9 @@ export default function App() {
     { label: 'Clínica', id: 'clinica' },
     { label: 'Serviços', id: 'servicos' },
     { label: 'Gestão', id: 'gestao' },
-    { label: 'eSocial', id: 'socialegestaosst' },
+    { label: 'eSocial', id: 'esocial' },
     { label: 'Orientações', id: 'orientacoes' },
+    { label: 'Normativas', id: 'normativas' },
     { label: 'Cadastro', id: 'cadastro' },
     { label: 'Contato', id: 'contato' }
   ];
@@ -54,6 +64,58 @@ export default function App() {
       return;
     }
 
+    if (id === 'clinica') {
+      setCurrentPage('clinica');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (id === 'servicos') {
+      setCurrentPage('servicos');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (id === 'gestao') {
+      setCurrentPage('gestao');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (id === 'esocial') {
+      setCurrentPage('esocial');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (id === 'orientacoes') {
+      setCurrentPage('orientacoes');
+      window.scrollTo(0, 0);
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (id === 'normativas') {
+      setCurrentPage('normativas');
+      window.scrollTo(0, 0);
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (id === 'contato') {
+      setCurrentPage('contato');
+      window.scrollTo(0, 0);
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (id === 'faq') {
+      setCurrentPage('faq');
+      window.scrollTo(0, 0);
+      setIsMenuOpen(false);
+      return;
+    }
+
     if (id === 'politicadeprivacidade') {
       setCurrentPage('politicadeprivacidade');
       window.scrollTo(0, 0);
@@ -68,6 +130,12 @@ export default function App() {
 
     if (id === 'sitemap') {
       setCurrentPage('sitemap');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    if (id === 'cadastro') {
+      setCurrentPage('cadastro');
       window.scrollTo(0, 0);
       return;
     }
@@ -153,25 +221,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
-            {menuItems.map((item) => (
-              <button 
-                key={item.label}
-                onClick={() => scrollToSection(item.id)}
-                className="hover:text-[#0F2C4A] transition-colors uppercase text-xs font-bold tracking-wide flex items-center gap-1"
-              >
-                {item.label}
-                {item.icon && <ChevronDown size={14} />}
-              </button>
-            ))}
-            <a href="https://sistema.soc.com.br/WebSoc/" target="_blank" rel="noopener noreferrer" className="bg-[#0F2C4A] text-white px-5 py-2 rounded-full hover:bg-[#0A1F35] transition font-bold shadow-lg shadow-slate-300 flex items-center gap-2">
-              <FileText size={16} /> Exames
-            </a>
-          </nav>
-
           {/* Mobile Menu Button */}
-          <button className="lg:hidden text-slate-700 z-50" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button className="text-slate-700 z-50" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={28} /> : (
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="4" y1="9" x2="20" y2="9" />
@@ -182,12 +233,15 @@ export default function App() {
         </div>
 
         {/* Mobile Nav Drawer */}
-        <div className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 lg:hidden ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMenuOpen(false)} />
+        <div className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMenuOpen(false)} />
         
-        <div className={`fixed top-0 right-0 h-full w-[80%] max-w-sm bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className={`fixed top-0 right-0 h-full w-[80%] max-w-sm bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
             <div className="flex flex-col h-full">
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                    <span className="font-bold text-[#0F2C4A] text-lg">Menu</span>
+                    <a href="https://sistema.soc.com.br/WebSoc/" target="_blank" rel="noopener noreferrer" className="bg-[#0F2C4A] text-white px-4 py-2 rounded-lg hover:bg-[#0A1F35] transition font-bold shadow-sm flex items-center gap-2 text-sm">
+                        <FileText size={16} />
+                        Portal Exames
+                    </a>
                     <button onClick={() => setIsMenuOpen(false)} className="text-slate-400 hover:text-red-500 transition-colors">
                         <X size={24} />
                     </button>
@@ -203,12 +257,6 @@ export default function App() {
                   <ChevronRight size={16} className="text-slate-300 group-hover:text-[#0F2C4A] transition-colors" />
                 </button>
               ))}
-                    <div className="p-6 mt-4">
-                        <a href="https://sistema.soc.com.br/WebSoc/" target="_blank" rel="noopener noreferrer" className="w-full bg-[#0F2C4A] text-white px-5 py-3 rounded-lg hover:bg-[#0A1F35] transition font-bold shadow-lg flex items-center justify-center gap-2">
-                            <FileText size={18} />
-                            Portal Exames
-                        </a>
-                    </div>
                 </div>
             </div>
           </div>
@@ -223,6 +271,42 @@ export default function App() {
 
       {currentPage === 'home' && (
         <Home onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'clinica' && (
+        <Clinica onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'servicos' && (
+        <Servicos onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'gestao' && (
+        <Gestao onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'esocial' && (
+        <Esocial onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'orientacoes' && (
+        <Orientacoes onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'normativas' && (
+        <Normativas onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'cadastro' && (
+        <Cadastro onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'contato' && (
+        <Contato onNavigate={scrollToSection} />
+      )}
+
+      {currentPage === 'faq' && (
+        <Faq onNavigate={scrollToSection} />
       )}
 
       {/* --- PÁGINA DE POLÍTICA DE PRIVACIDADE --- */}

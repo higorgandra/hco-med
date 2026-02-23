@@ -30,7 +30,7 @@ export default function Sitemap({ onNavigate }) {
               <h3 className="text-xl font-bold text-[#0F2C4A] mb-4 border-b border-slate-100 pb-2">Serviços e Conteúdo</h3>
               <ul className="space-y-3">
                 <li><button onClick={() => onNavigate('servicos')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Nossos Serviços</button></li>
-                <li><button onClick={() => onNavigate('socialegestaosst')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> eSocial e Gestão SST</button></li>
+                <li><button onClick={() => onNavigate('esocial')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> eSocial e Gestão SST</button></li>
                 <li><button onClick={() => onNavigate('gestao')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Gestão de Saúde</button></li>
                 <li><button onClick={() => onNavigate('orientacoes')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Dicas e Orientações</button></li>
                 <li><button onClick={() => onNavigate('diretrizes')} className="text-slate-600 hover:text-[#0F2C4A] hover:underline transition flex items-center gap-2"><ChevronRight size={14} /> Diretrizes Essenciais</button></li>
